@@ -120,16 +120,16 @@ const AdminSidebar = () => {
             {/* SECTION: MAIN */}
             <label className="section-label">Main</label>
 
-            <a href="#dashboard" className={`nav-item${active === "Dashboard" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Dashboard"); }}>
+            <Link href="#dashboard" className={`nav-item${active === "Dashboard" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Dashboard"); }}>
               <i className="bi bi-speedometer2 nav-icon" />
               <span className="nav-label">Dashboard</span>
-            </a>
+            </Link>
 
-            <a href="#registered-users" className={`nav-item${active === "Registered Users" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Registered Users"); }}>
+            <Link href="#registered-users" className={`nav-item${active === "Registered Users" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Registered Users"); }}>
               <i className="bi bi-people-fill nav-icon" />
               <span className="nav-label">Registered Users</span>
               <span className="badge">24</span>
-            </a>
+            </Link>
 
             <div className="nav-divider" />
 
@@ -140,19 +140,19 @@ const AdminSidebar = () => {
             <div>
               <button 
                 className={`nav-item${["Add Category", "Manage Category"].includes(active) ? " active" : ""}`} onClick={() => toggle("category")}>
-                <i className="bi bi-grid-fill nav-icon" />
-                <span className="nav-label">Food Category</span>
+                <i className="bi bi-grid-fill nav-icon" /> <span className="nav-label">Food Category</span>
                 <i className={`bi bi-chevron-down chevron${open.category ? " open" : ""}`} />
               </button>
               <div className={`dropdown-wrap${open.category ? " open" : ""}`}>
-                <a href="#add-category" className={`sub-item${active === "Add Category" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Add Category"); }}>
+                <Link to='/add-category' className={`sub-item${active === "Add Category" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Add Category"); }}>
                   <i className="bi bi-plus-circle sub-icon" />
                   Add Category
-                </a>
-                <a href="#manage-category" className={`sub-item${active === "Manage Category" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Manage Category"); }}>
+                </Link>
+
+                <Link className={`sub-item${active === "Manage Category" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Manage Category"); }}>
                   <i className="bi bi-sliders sub-icon" />
                   Manage Category
-                </a>
+                </Link>
               </div>
             </div>
 

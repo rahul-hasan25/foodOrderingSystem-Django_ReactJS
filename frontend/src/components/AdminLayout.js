@@ -27,7 +27,7 @@ const AdminLayout = ({children}) => {
       {sidebarOpen && <AdminSidebar/>}
       <div id='page-content-wrapper' className={`flex-grow-1 ${sidebarOpen ? 'with-sidebar' : 'full-width'}`}>
         <AdminHeader toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-        <div className='container-fluid mt-4'>
+        <div>
           {children}
         </div>
       </div>
