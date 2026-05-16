@@ -1,0 +1,451 @@
+import { useState } from "react";
+
+const styles = `
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+  @import url('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css');
+ 
+  :root {
+    --sidebar-bg: #0f1117;
+    --sidebar-width: 265px;
+    --accent: #f97316;
+    --accent-soft: rgba(249, 115, 22, 0.12);
+    --accent-glow: rgba(249, 115, 22, 0.3);
+    --text-primary: #f1f5f9;
+    --text-muted: #64748b;
+    --item-hover: rgba(255,255,255,0.05);
+    --item-active: rgba(249, 115, 22, 0.15);
+    --divider: rgba(255,255,255,0.07);
+    --submenu-bg: rgba(0,0,0,0.25);
+    --badge-bg: #f97316;
+  }
+ 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  .sidebar {
+    width: var(--sidebar-width);
+    min-height: 100vh;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--divider);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+ 
+  .sidebar::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: -80px;
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+ 
+  .sidebar-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+ 
+  /* ── Profile Header ── */
+  .profile-header {
+    padding: 28px 20px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--divider);
+  }
+ 
+  .avatar-wrap {
+    position: relative;
+    width: 76px;
+    height: 76px;
+  }
+ 
+  .avatar-ring {
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent), #fb923c, #fbbf24, var(--accent));
+    animation: spin 6s linear infinite;
+  }
+ 
+  @keyframes spin { to { transform: rotate(360deg); } }
+ 
+  .avatar-img {
+    position: relative;
+    z-index: 1;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    border: 3px solid var(--sidebar-bg);
+    object-fit: cover;
+    background: #1e2130;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    overflow: hidden;
+  }
+ 
+  .avatar-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+ 
+  .status-dot {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 13px;
+    height: 13px;
+    background: #22c55e;
+    border-radius: 50%;
+    border: 2px solid var(--sidebar-bg);
+    z-index: 2;
+  }
+ 
+  .admin-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.3px;
+  }
+ 
+  .admin-role {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 2px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+ 
+  /* ── Nav ── */
+  .nav-section {
+    padding: 10px 0;
+  }
+ 
+  .section-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 10px 20px 6px;
+  }
+ 
+  /* ── Nav Item ── */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #94a3b8;
+    font-size: 13.5px;
+    font-weight: 500;
+    border-radius: 0;
+    transition: all 0.18s ease;
+    border-left: 3px solid transparent;
+    user-select: none;
+    text-decoration: none;
+    position: relative;
+    background: transparent;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+  }
+ 
+  .nav-item:hover {
+    background: var(--item-hover);
+    color: var(--text-primary);
+  }
+ 
+  .nav-item.active {
+    background: var(--item-active);
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+ 
+  .nav-item .nav-icon {
+    font-size: 17px;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+ 
+  .nav-item .nav-label {
+    flex: 1;
+  }
+ 
+  .nav-item .chevron {
+    font-size: 12px;
+    transition: transform 0.25s ease;
+    color: var(--text-muted);
+  }
+ 
+  .nav-item .chevron.open {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+ 
+  .nav-item .badge {
+    background: var(--badge-bg);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 20px;
+    line-height: 1.6;
+  }
+ 
+  /* ── Dropdown ── */
+  .dropdown-wrap {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--submenu-bg);
+  }
+ 
+  .dropdown-wrap.open {
+    max-height: 200px;
+  }
+ 
+  .sub-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px 9px 46px;
+    color: #64748b;
+    font-size: 12.5px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+  }
+ 
+  .sub-item::before {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: background 0.15s ease;
+  }
+ 
+  .sub-item:hover {
+    color: var(--text-primary);
+    background: rgba(255,255,255,0.04);
+  }
+ 
+  .sub-item:hover::before {
+    background: var(--accent);
+  }
+ 
+  .sub-item.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+ 
+  .sub-item.active::before {
+    background: var(--accent);
+  }
+ 
+  .sub-item .sub-icon {
+    font-size: 14px;
+  }
+ 
+  /* ── Divider ── */
+  .nav-divider {
+    height: 1px;
+    background: var(--divider);
+    margin: 8px 16px;
+  }
+ 
+  /* ── Footer ── */
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--divider);
+  }
+
+  .logout-btn {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(239,68,68,0.1);
+    color: #f87171;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+ 
+  .logout-btn:hover {
+    background: rgba(239,68,68,0.16);
+    border-color: rgba(239,68,68,0.3);
+    color: #fca5a5;
+  }
+`;
+
+const AdminSidebar = () => {
+  const [open, setOpen] = useState({ category: false, item: false });
+  const [active, setActive] = useState("Dashboard");
+
+  const toggle = (key) => {
+    setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  return (
+    <>
+      <style>{styles}</style>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+
+      {/* ── Sidebar ── */}
+      <aside className="sidebar">
+        <div className="sidebar-content">
+          {/* Profile */}
+          <div className="profile-header">
+            <div className="avatar-wrap">
+              <div className="avatar-ring" />
+              <div className="avatar-img">
+                <i className="bi bi-person-fill" style={{ color: "#f97316", position: "relative", zIndex: 1 }} />
+              </div>
+              <div className="status-dot" />
+            </div>
+
+            <div style={{ textAlign: "center" }}>
+              <div className="admin-name">Rahul Hasan</div>
+              <div className="admin-role" style={{ marginTop: 5 }}>
+                Super Admin
+              </div>
+            </div>
+          </div>
+
+          {/* Nav */}
+          <nav style={{ flex: 1, overflowY: "auto", paddingBottom: 8 }}>
+            
+            {/* SECTION: MAIN */}
+            <label className="section-label">Main</label>
+
+            <a href="#dashboard" className={`nav-item${active === "Dashboard" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Dashboard"); }}>
+              <i className="bi bi-speedometer2 nav-icon" />
+              <span className="nav-label">Dashboard</span>
+            </a>
+
+            <a href="#registered-users" className={`nav-item${active === "Registered Users" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Registered Users"); }}>
+              <i className="bi bi-people-fill nav-icon" />
+              <span className="nav-label">Registered Users</span>
+              <span className="badge">24</span>
+            </a>
+
+            <div className="nav-divider" />
+
+            {/* SECTION: FOOD MANAGEMENT */}
+            <label className="section-label">Food Management</label>
+
+            {/* Dropdown: Food Category */}
+            <div>
+              <button 
+                className={`nav-item${["Add Category", "Manage Category"].includes(active) ? " active" : ""}`} 
+                onClick={() => toggle("category")}
+              >
+                <i className="bi bi-grid-fill nav-icon" />
+                <span className="nav-label">Food Category</span>
+                <i className={`bi bi-chevron-down chevron${open.category ? " open" : ""}`} />
+              </button>
+              <div className={`dropdown-wrap${open.category ? " open" : ""}`}>
+                <a href="#add-category" className={`sub-item${active === "Add Category" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Add Category"); }}>
+                  <i className="bi bi-plus-circle sub-icon" />
+                  Add Category
+                </a>
+                <a href="#manage-category" className={`sub-item${active === "Manage Category" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Manage Category"); }}>
+                  <i className="bi bi-sliders sub-icon" />
+                  Manage Category
+                </a>
+              </div>
+            </div>
+
+            {/* Dropdown: Food Item */}
+            <div>
+              <button 
+                className={`nav-item${["Add Food Item", "Manage Food Item"].includes(active) ? " active" : ""}`} 
+                onClick={() => toggle("item")}
+              >
+                <i className="bi bi-basket3-fill nav-icon" />
+                <span className="nav-label">Food Item</span>
+                <i className={`bi bi-chevron-down chevron${open.item ? " open" : ""}`} />
+              </button>
+              <div className={`dropdown-wrap${open.item ? " open" : ""}`}>
+                <a href="#add-food" className={`sub-item${active === "Add Food Item" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Add Food Item"); }}>
+                  <i className="bi bi-plus-circle sub-icon" />
+                  Add Food Item
+                </a>
+                <a href="#manage-food" className={`sub-item${active === "Manage Food Item" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Manage Food Item"); }}>
+                  <i className="bi bi-list-check sub-icon" />
+                  Manage Food Item
+                </a>
+              </div>
+            </div>
+
+            <div className="nav-divider" />
+
+            {/* SECTION: TOOLS */}
+            <label className="section-label">Tools</label>
+
+            <a href="#search" className={`nav-item${active === "Search" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Search"); }}>
+              <i className="bi bi-search nav-icon" />
+              <span className="nav-label">Search</span>
+            </a>
+
+            <a href="#reviews" className={`nav-item${active === "Manage Reviews" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Manage Reviews"); }}>
+              <i className="bi bi-chat-square-text-fill nav-icon" />
+              <span className="nav-label">Manage Reviews</span>
+              <span className="badge">7</span>
+            </a>
+
+          </nav>
+
+          {/* Footer */}
+          <div className="sidebar-footer">
+            <button className="logout-btn">
+              <i className="bi bi-box-arrow-left" style={{ fontSize: 16 }} />
+              <span> Sign Out </span>
+            </button>
+          </div>
+        </div>
+      </aside>
+    </>
+  );
+};
+
+export default AdminSidebar;
