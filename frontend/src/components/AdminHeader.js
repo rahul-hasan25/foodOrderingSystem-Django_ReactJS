@@ -1,12 +1,16 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 const AdminHeader = () => {
+  const navigate = useNavigate();
+
   const handleNotificationClick = () => {
     alert('Notifications clicked!');
   };
 
   const handleLogoutClick = () => {
-    alert('Logging out...');
+    localStorage.removeItem('adminUser');
+    navigate('/admin-login');
   };
   return (
     <>
@@ -35,9 +39,7 @@ const AdminHeader = () => {
                 </span>
               </button>
 
-              <button className="btn d-flex align-items-center gap-2 px-3 py-2 fw-medium" onClick={handleLogoutClick} style={{ fontSize: '14px', backgroundColor: '#fef2f2',color: '#ef4444', border: '1px solid #fca5a5', transition: 'all 0.2s'}}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#fee2e2'; e.currentTarget.style.color = '#dc2626';}}
-                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#fef2f2'; e.currentTarget.style.color = '#ef4444';}}>
+              <button className="btn d-flex align-items-center gap-2 px-3 py-2 fw-medium" onClick={handleLogoutClick} style={{ fontSize: '14px', backgroundColor: '#fef2f2',color: '#ef4444', border: '1px solid #fca5a5', transition: 'all 0.2s'}} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#fee2e2'; e.currentTarget.style.color = '#dc2626';}} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#fef2f2'; e.currentTarget.style.color = '#ef4444';}}>
                 <i className="bi bi-box-arrow-right fs-6"></i>
                 <span>Logout</span>
               </button>
