@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
-const AdminHeader = () => {
+const AdminHeader = ({toggleSidebar, sidebarOpen}) => {
   const navigate = useNavigate();
 
   const handleNotificationClick = () => {
@@ -18,6 +18,10 @@ const AdminHeader = () => {
       <nav className="navbar navbar-expand-lg bg-white w-100 px-4 shadow-sm" style={{ borderBottom: '1px solid #e2e8f0', paddingTop: '8px', paddingBottom: '8px'}}>
         <div className="container-fluid p-0">
           <a className="navbar-brand d-flex align-items-center gap-2" href="#home" style={{ textDecoration: 'none' }}>
+            <button onClick={toggleSidebar} className="btn btn-outline-secondary me-2">
+              <i className="bi bi-text-left fs-5"></i>
+            </button>
+
             <div className="d-flex align-items-center justify-content-center rounded-circle text-white" style={{ width: '40px', height: '40px', fontSize: '20px', background: 'linear-gradient(135deg, #f97316 0%, #ffa14a 100%)', boxShadow: '0 4px 12px rgba(249, 115, 22, 0.2)'}}>
               <i className="bi bi-egg-fried"></i>
             </div>
