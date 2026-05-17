@@ -34,17 +34,36 @@ const ManageCategory = () => {
     };
 
     const filteredCategories = categories.filter(category =>
-        category.category_name.toLowerCase().includes(searchQuery.toLowerCase())
+        category.category_name?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleEdit = (name) => {
-        toast.info(`✏️ Editing context for "${name}"`, { position: "top-right", autoClose: 2000 });
+    const handleEdit = async (id, current_category_name) => {
+        const newCategoryName = prompt(`Update Category Name for "${current_category_name}":`, current_category_name);
+        if (!newCategoryName || newCategoryName.trim() === "" || newCategoryName.trim() === current_category_name) return;
+        try {
+            const response = await axios.put(`${API_URL}${id}/`, {
+                category_name: newCategoryName.trim()
+            });
+            setCategories(categories.map(cat => 
+                cat.id === id ? { ...cat, category_name: response.data.category_name } : cat
+            ));
+            toast.info(`Updated to "${response.data.category_name}"`);
+        } catch (error) {
+            console.error("DRF Update Error:", error);
+            toast.error("Failed to update category. Please try again!");
+        }
     };
 
-    const handleDelete = (id, name) => {
-        if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
-            setCategories(categories.filter(category => category.id !== id));
-            toast.error(`❌ "${name}" deleted successfully!`, { position: "top-right", autoClose: 3000 });
+    const handleDelete = async (id, category_name) => {
+        if (window.confirm(`Are you sure you want to delete "${category_name}"?`)) {
+            try {
+                await axios.delete(`${API_URL}${id}/`);
+                setCategories(categories.filter(category => category.id !== id));
+                toast.error(`"${category_name}" deleted successfully!`);
+            } catch (error) {
+                console.error("Delete Error:", error);
+                toast.warn("Could not delete. Server error!");
+            }
         }
     };
   return (
@@ -63,7 +82,7 @@ const ManageCategory = () => {
 
                     <div>
                         <p className="text-muted small m-0 fw-medium text-uppercase tracking-wider" style={{ fontSize: '10px' }}>Total Categories</p>
-                        <h3 className="fw-bold text-dark m-0" style={{ fontSize: '22px' }}>{categories.length}</h3>
+                        <h3 className="fw-bold text-dark m-0" style={{ fontSize: '22px' }}>{isLoading ? "..." : categories.length}</h3>
                     </div>
                 </div>
             </div>
@@ -74,7 +93,7 @@ const ManageCategory = () => {
                         <span className="input-group-text bg-white border-0 ps-3">
                             <i className="bi bi-search text-muted"></i>
                         </span>
-                        <input type="text" className="form-relative form-control bg-white text-dark border-0 py-2 custom-placeholder" placeholder="Type category name..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} style={{ height: '46px', fontSize: '14px', boxShadow: 'none' }}/>
+                        <input type="text" className="form-relative form-control bg-white text-dark border-0 py-2 custom-placeholder" placeholder="Type category name..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} disabled={isLoading} style={{ height: '46px', fontSize: '14px', boxShadow: 'none' }}/>
                         {searchInput && (
                             <button type="button" onClick={() => { setSearchInput(''); setSearchQuery(''); }} className="btn bg-white text-muted border-0 pe-3" style={{ fontSize: '14px' }}>
                                 <i className="bi bi-x-circle-fill"></i>
@@ -90,7 +109,7 @@ const ManageCategory = () => {
                 </div>
 
                 <div className="col-12 col-md-auto text-muted small text-md-end">
-                    Showing <span className="text-dark fw-semibold">{filteredCategories.length}</span> entries
+                    Showing <span className="text-dark fw-semibold">{isLoading ? 0 : filteredCategories.length}</span> entries
                 </div>
             </form>
 
@@ -107,7 +126,16 @@ const ManageCategory = () => {
                         </thead>
                         
                         <tbody className="border-0">
-                            {filteredCategories.length > 0 ? (
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan="4" className="text-center py-5">
+                                        <div className="spinner-border text-warning" role="status" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                            <span className="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p className="text-muted mt-2 small fw-medium">Fetching secure data from server...</p>
+                                    </td>
+                                </tr>
+                            ) : filteredCategories.length > 0 ? (
                                 filteredCategories.map((category, index) => (
                                     <tr key={category.id} className="border-bottom border-light" style={{ transition: 'all 0.2s' }}>
                                         <td className="py-3 px-4 text-center">
@@ -134,11 +162,11 @@ const ManageCategory = () => {
                                         
                                         <td className="py-3 px-4 text-center">
                                             <div className="d-flex justify-content-center gap-2">
-                                                <button onClick={() => handleEdit(category.name)} className="btn rounded-3 border-0 text-dark d-inline-flex align-items-center justify-content-center shadow-sm" style={{ width: '36px', height: '36px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0' }} title="Edit Category">
+                                                <button onClick={() => handleEdit(category.id, category.category_name)} className="btn rounded-3 border-0 text-dark d-inline-flex align-items-center justify-content-center shadow-sm" style={{ width: '36px', height: '36px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0' }} title="Edit Category">
                                                     <i className="bi bi-pencil fs-6"></i>
                                                 </button>
                                                 
-                                                <button onClick={() => handleDelete(category.id, category.name)} className="btn rounded-3 border-0 text-danger d-inline-flex align-items-center justify-content-center shadow-sm" style={{ width: '36px', height: '36px', backgroundColor: '#fff5f5', border: '1px solid #fee2e2' }} title="Delete Category">
+                                                <button onClick={() => handleDelete(category.id, category.category_name)} className="btn rounded-3 border-0 text-danger d-inline-flex align-items-center justify-content-center shadow-sm" style={{ width: '36px', height: '36px', backgroundColor: '#fff5f5', border: '1px solid #fee2e2' }} title="Delete Category">
                                                     <i className="bi bi-trash3 fs-6"></i>
                                                 </button>
                                             </div>

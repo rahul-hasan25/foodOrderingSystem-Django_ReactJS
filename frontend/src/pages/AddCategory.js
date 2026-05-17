@@ -25,7 +25,7 @@ const AddCategory = () => {
 
             console.log("Category Added:", trimmedCategory);
             
-            toast.success(`🎉 "${trimmedCategory}" added successfully!`);
+            toast.success(`"${trimmedCategory}" added successfully!`);
             setCategoryName('');
         } catch (error) {
             console.error("Error adding category:", error);
