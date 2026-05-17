@@ -2,3 +2,10 @@
   color: #94a3b8 !important; /* স্পষ্ট অ্যাসথেটিক ধূসর কালার */
   opacity: 1 !important;     /* অপাসিটি ফুল করার জন্য */
 }
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow-x: hidden;
+}

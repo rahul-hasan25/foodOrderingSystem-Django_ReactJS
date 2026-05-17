@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AddCategory from './pages/AddCategory';
+import ManageCategory from './pages/ManageCategory';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path='/admin-login' element={<AdminLogin/>} />
         <Route path='/admin-dashboard' element={<AdminDashboard/>} />
         <Route path='/add-category' element={<AddCategory/>} />
+        <Route path='/manage-category' element={<ManageCategory/>} />
       </Routes>
     </BrowserRouter>
   );

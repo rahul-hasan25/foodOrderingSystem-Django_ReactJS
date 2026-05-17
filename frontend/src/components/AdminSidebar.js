@@ -149,7 +149,7 @@ const AdminSidebar = () => {
                   Add Category
                 </Link>
 
-                <Link className={`sub-item${active === "Manage Category" ? " active" : ""}`} onClick={() => setActive("Manage Category")}>
+                <Link to='/manage-category' className={`sub-item${active === "Manage Category" ? " active" : ""}`} onClick={() => setActive("Manage Category")}>
                   <i className="bi bi-sliders sub-icon" />
                   Manage Category
                 </Link>
