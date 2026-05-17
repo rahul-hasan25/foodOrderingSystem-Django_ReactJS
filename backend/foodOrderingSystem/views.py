@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import status
+from .models import *
 
 
 #<--------ADMIN-------->
@@ -26,4 +27,17 @@ def admin_login_api(request):
             'success' : False,
             'message' : 'Invalid Credentials!'
         }, status=status.HTTP_401_UNAUTHORIZED
+    )
+    
+
+#Add Category
+@api_view(['POST'])
+def add_category(request):
+    category_name = request.data.get('category_name')
+    Category.objects.create(category_name=category_name)
+    return Response(
+        {
+            'success' : True,
+            'message' : 'Category has been created!'
+        }, status=status.HTTP_201_CREATED
     )

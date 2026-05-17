@@ -4,13 +4,7 @@ from .models import *
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = (
-        'id',
-        'first_name',
-        'last_name',
-        'email',
-        'mobile',
-        'reg_date',
+    list_display = ('first_name','last_name','email','mobile','reg_date',
     )
     search_fields = (
         'first_name',
@@ -23,11 +17,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = (
-        'id',
-        'category_name',
-        'creation_date',
-    )
+    list_display = ('category_name','creation_date')
     search_fields = ('category_name',)
     list_filter = ('creation_date',)
 

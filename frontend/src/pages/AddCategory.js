@@ -20,7 +20,7 @@ const AddCategory = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/add-category/', { name: trimmedCategory });
+            const res = await axios.post('http://127.0.0.1:8000/api/add-category/', { category_name: trimmedCategory });
             await new Promise((resolve) => setTimeout(resolve, 1500));
 
             console.log("Category Added:", trimmedCategory);

@@ -120,12 +120,12 @@ const AdminSidebar = () => {
             {/* SECTION: MAIN */}
             <label className="section-label">Main</label>
 
-            <Link href="#dashboard" className={`nav-item${active === "Dashboard" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Dashboard"); }}>
+            <Link to='/admin-dashboard' className={`nav-item${active === "Dashboard" ? " active" : ""}`} onClick={() => setActive("Dashboard")}>
               <i className="bi bi-speedometer2 nav-icon" />
               <span className="nav-label">Dashboard</span>
             </Link>
 
-            <Link href="#registered-users" className={`nav-item${active === "Registered Users" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Registered Users"); }}>
+            <Link className={`nav-item${active === "Registered Users" ? " active" : ""}`} onClick={() => setActive("Registered Users")}>
               <i className="bi bi-people-fill nav-icon" />
               <span className="nav-label">Registered Users</span>
               <span className="badge">24</span>
@@ -144,12 +144,12 @@ const AdminSidebar = () => {
                 <i className={`bi bi-chevron-down chevron${open.category ? " open" : ""}`} />
               </button>
               <div className={`dropdown-wrap${open.category ? " open" : ""}`}>
-                <Link to='/add-category' className={`sub-item${active === "Add Category" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Add Category"); }}>
+                <Link to='/add-category' className={`sub-item${active === "Add Category" ? " active" : ""}`} onClick={() => setActive("Add Category")}>
                   <i className="bi bi-plus-circle sub-icon" />
                   Add Category
                 </Link>
 
-                <Link className={`sub-item${active === "Manage Category" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Manage Category"); }}>
+                <Link className={`sub-item${active === "Manage Category" ? " active" : ""}`} onClick={() => setActive("Manage Category")}>
                   <i className="bi bi-sliders sub-icon" />
                   Manage Category
                 </Link>
