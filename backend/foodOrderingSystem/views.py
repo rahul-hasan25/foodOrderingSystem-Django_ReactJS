@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import status
 from .models import *
+from .serializers import *
 
 
 #<--------ADMIN-------->
@@ -29,7 +30,7 @@ def admin_login_api(request):
         }, status=status.HTTP_401_UNAUTHORIZED
     )
     
-
+#ADMIN Sidebar
 #Add Category
 @api_view(['POST'])
 def add_category(request):
@@ -41,3 +42,11 @@ def add_category(request):
             'message' : 'Category has been created!'
         }, status=status.HTTP_201_CREATED
     )
+
+
+#Manage Category
+@api_view(['GET'])
+def list_categories(request):
+    categories = Category.objects.all()
+    serializer = CategorySerializer(categories, many=True)
+    return Response(serializer.data)

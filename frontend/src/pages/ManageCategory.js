@@ -1,18 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import AdminLayout from './../components/AdminLayout';
 
 const ManageCategory = () => {
-    const [categories, setCategories] = useState([
-        { id: 1, name: 'Fast Food', createdAt: '2026-05-10' },
-        { id: 2, name: 'Desserts & Sweets', createdAt: '2026-05-12' },
-        { id: 3, name: 'Beverages', createdAt: '2026-05-14' },
-        { id: 4, name: 'Traditional Thali', createdAt: '2026-05-15' },
-        { id: 5, name: 'Healthy Salads', createdAt: '2026-05-17' },
-    ]);
-
+    const [categories, setCategories] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [searchInput, setSearchInput] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+
+    const API_URL = "http://127.0.0.1:8000/api/categories/";
+
+    const fetchCategories = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.get(API_URL);
+            setCategories(response.data); 
+        } catch (error) {
+            console.error("API Fetch Error:", error);
+            toast.error("Failed to load categories from server!");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -20,7 +34,7 @@ const ManageCategory = () => {
     };
 
     const filteredCategories = categories.filter(category =>
-        category.name.toLowerCase().includes(searchQuery.toLowerCase())
+        category.category_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const handleEdit = (name) => {
@@ -85,10 +99,10 @@ const ManageCategory = () => {
                     <table className="table align-middle mb-0" style={{ minWidth: '800px' }}>
                         <thead style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #f1f5f9' }}>
                             <tr>
-                                <th className="py-3 px-4 text-secondary fw-semibold text-center uppercase tracking-wider" style={{ width: '10%', fontSize: '12px' }}>SL No</th>
-                                <th className="py-3 px-4 text-secondary fw-semibold uppercase tracking-wider" style={{ fontSize: '12px' }}>Category Name</th>
-                                <th className="py-3 px-4 text-secondary fw-semibold uppercase tracking-wider" style={{ fontSize: '12px' }}>Creation Date</th>
-                                <th className="py-3 px-4 text-secondary fw-semibold text-center uppercase tracking-wider" style={{ width: '15%', fontSize: '12px' }}>Action</th>
+                                <th className="py-3 px-4 text-secondary fw-semibold text-center text-uppercase tracking-wider" style={{ width: '10%', fontSize: '12px' }}>SL No</th>
+                                <th className="py-3 px-4 text-secondary fw-semibold text-uppercase tracking-wider" style={{ fontSize: '12px' }}>Category Name</th>
+                                <th className="py-3 px-4 text-secondary fw-semibold text-uppercase tracking-wider" style={{ fontSize: '12px' }}>Creation Date</th>
+                                <th className="py-3 px-4 text-secondary fw-semibold text-center text-uppercase tracking-wider" style={{ width: '15%', fontSize: '12px' }}>Action</th>
                             </tr>
                         </thead>
                         
@@ -106,7 +120,7 @@ const ManageCategory = () => {
                                             <div className="d-flex align-items-center gap-3">
                                                 <div className="rounded-circle" style={{ width: '6px', height: '6px', backgroundColor: '#f97316' }}></div>
                                                 <span className="fw-semibold text-dark" style={{ fontSize: '15px', letterSpacing: '-0.2px' }}>
-                                                    {category.name}
+                                                    {category.category_name}
                                                 </span>
                                             </div>
                                         </td>
@@ -114,7 +128,7 @@ const ManageCategory = () => {
                                         <td className="py-3 px-4 text-secondary" style={{ fontSize: '13.5px' }}>
                                             <div className="d-flex align-items-center gap-2">
                                                 <i className="bi bi-clock-history text-muted"></i>
-                                                {category.createdAt}
+                                                {new Date(category.creation_date).toLocaleDateString()}
                                             </div>
                                         </td>
                                         
