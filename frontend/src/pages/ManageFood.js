@@ -157,7 +157,7 @@ const ManageFood = () => {
                                     {/* <th className="py-3 px-4 text-secondary fw-semibold uppercase tracking-wider" style={{ fontSize: '13px', width: '10%' }}>Image</th> */}
                                     <th className="py-3 px-4 text-secondary fw-semibold uppercase tracking-wider" style={{ fontSize: '13px' }}>Food Name</th>
                                     <th className="py-3 px-4 text-secondary fw-semibold uppercase tracking-wider" style={{ fontSize: '13px' }}>Category</th>
-                                    <th className="py-3 px-4 text-secondary fw-semibold uppercase tracking-wider" style={{ fontSize: '13px' }}>Price</th>
+                                    <th className="py-3 px-4 text-secondary fw-semibold uppercase tracking-wider" style={{ fontSize: '13px' }}>Price (BDT)</th>
                                     <th className="py-3 px-4 text-secondary fw-semibold uppercase tracking-wider" style={{ fontSize: '13px' }}>Quantity</th>
                                     <th className="py-3 px-4 text-secondary fw-semibold uppercase tracking-wider" style={{ fontSize: '13px', width: '12%' }}>Status</th>
                                     <th className="py-3 px-4 text-secondary fw-semibold text-center uppercase tracking-wider" style={{ width: '12%', fontSize: '13px' }}>Action</th>
@@ -202,7 +202,7 @@ const ManageFood = () => {
                                             </td>
 
                                             <td className="py-3 px-4 text-dark fw-bold">
-                                                ${parseFloat(food.item_price).toFixed(2)}
+                                                {parseFloat(food.item_price).toFixed(2)}
                                             </td>
 
                                             <td className="py-3 px-4 text-secondary fw-medium">

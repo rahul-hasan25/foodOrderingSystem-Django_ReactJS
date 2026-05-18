@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AdminHeader = ({toggleSidebar, sidebarOpen}) => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const AdminHeader = ({toggleSidebar, sidebarOpen}) => {
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
       <nav className="navbar navbar-expand-lg bg-white w-100 px-4 shadow-sm" style={{ borderBottom: '1px solid #e2e8f0', paddingTop: '8px', paddingBottom: '8px'}}>
         <div className="container-fluid p-0">
-          <a className="navbar-brand d-flex align-items-center gap-2" href="#home" style={{ textDecoration: 'none' }}>
+          <Link to='/' className="navbar-brand d-flex align-items-center gap-2" style={{ textDecoration: 'none' }}>
             <button onClick={toggleSidebar} className="btn btn-outline-secondary me-2">
               <i className="bi bi-text-left fs-5"></i>
             </button>
@@ -28,7 +28,7 @@ const AdminHeader = ({toggleSidebar, sidebarOpen}) => {
             <span className="fw-bold tracking-wide" style={{ color: '#0f172a', fontSize: '20px' }}>
               Food<span style={{ color: '#f97316' }}>Express</span>
             </span>
-          </a>
+          </Link>
 
           <button className="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
