@@ -7,4 +7,6 @@ urlpatterns = [
     path('add-category/', add_category),
     path('categories/', list_categories),
     path('categories/<int:pk>/', CategoryDetailAPIView.as_view(), name='category-detail'),
+    path('categories-list/', CategoryListAPIView.as_view(), name='api-category-list'),
+    path('foods/add/', FoodCreateAPIView.as_view(), name='api-food-add'),
 ]

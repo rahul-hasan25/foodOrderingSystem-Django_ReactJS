@@ -7,6 +7,7 @@ from .models import *
 from .serializers import *
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 #<--------ADMIN-------->
@@ -71,3 +72,23 @@ class CategoryDetailAPIView(APIView):
             {"message": "Category deleted successfully"}, 
             status=status.HTTP_204_NO_CONTENT
         )
+        
+        
+
+# Add Food
+class CategoryListAPIView(APIView):
+    def get(self, request):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FoodCreateAPIView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        serializer = FoodSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -164,10 +164,10 @@ const AdminSidebar = () => {
                 <i className={`bi bi-chevron-down chevron${open.item ? " open" : ""}`} />
               </button>
               <div className={`dropdown-wrap${open.item ? " open" : ""}`}>
-                <a href="#add-food" className={`sub-item${active === "Add Food Item" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Add Food Item"); }}>
+                <Link to='/add-food' className={`sub-item${active === "Add Food Item" ? " active" : ""}`} onClick={() => setActive("Add Food Item")}>
                   <i className="bi bi-plus-circle sub-icon" />
                   Add Food Item
-                </a>
+                </Link>
                 <a href="#manage-food" className={`sub-item${active === "Manage Food Item" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Manage Food Item"); }}>
                   <i className="bi bi-list-check sub-icon" />
                   Manage Food Item

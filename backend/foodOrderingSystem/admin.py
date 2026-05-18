@@ -25,7 +25,6 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Food)
 class FoodAdmin(admin.ModelAdmin):
     list_display = (
-        'id',
         'item_name',
         'category',
         'item_price',
