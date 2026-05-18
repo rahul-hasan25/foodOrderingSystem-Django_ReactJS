@@ -168,10 +168,10 @@ const AdminSidebar = () => {
                   <i className="bi bi-plus-circle sub-icon" />
                   Add Food Item
                 </Link>
-                <a href="#manage-food" className={`sub-item${active === "Manage Food Item" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Manage Food Item"); }}>
+                <Link to='/manage-food' className={`sub-item${active === "Manage Food Item" ? " active" : ""}`} onClick={() => setActive("Manage Food Item")}>
                   <i className="bi bi-list-check sub-icon" />
                   Manage Food Item
-                </a>
+                </Link>
               </div>
             </div>
 

@@ -92,3 +92,26 @@ class FoodCreateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+#Manage FOOD
+class FoodListDestroyAPIView(APIView):
+    def get(self, request):
+        foods = Food.objects.all().select_related('category')
+        serializer = FoodSerializer(foods, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class FoodDetailAPIView(APIView):
+    def put(self, request, pk):
+        food = get_object_or_404(Food, pk=pk)
+        serializer = FoodSerializer(food, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        food = get_object_or_404(Food, pk=pk)
+        food.delete()
+        return Response({"message": "Food item deleted successfully"}, status=status.HTTP_204_NO_CONTENT)

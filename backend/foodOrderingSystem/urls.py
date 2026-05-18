@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import *
-from .views import CategoryDetailAPIView
 
 urlpatterns = [
     path('admin-login/', admin_login_api),
@@ -9,4 +8,6 @@ urlpatterns = [
     path('categories/<int:pk>/', CategoryDetailAPIView.as_view(), name='category-detail'),
     path('categories-list/', CategoryListAPIView.as_view(), name='api-category-list'),
     path('foods/add/', FoodCreateAPIView.as_view(), name='api-food-add'),
+    path('foods/', FoodListDestroyAPIView.as_view(), name='api-food-list'),
+    path('foods/<int:pk>/', FoodDetailAPIView.as_view(), name='api-food-detail'),
 ]
