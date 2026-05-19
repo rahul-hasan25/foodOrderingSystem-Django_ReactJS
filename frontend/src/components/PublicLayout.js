@@ -144,7 +144,69 @@ const PublicLayout = ({children}) => {
       </div>
   </nav>
 
-    <div>{children}</div>
+  <div>{children}</div>
+
+  <section className="py-5" style={{ backgroundColor: '#f8fafc', fontFamily: "'Poppins', sans-serif", borderTop: '1px solid #f1f5f9' }}>
+            <div className="container py-4">
+                {/* সেকশন হেডার */}
+                <div className="text-center mb-5">
+                    <span className="badge px-3 py-2 rounded-pill mb-2 fw-bold text-uppercase tracking-wider" style={{ backgroundColor: 'rgba(249, 115, 22, 0.1)', color: '#f97316', fontSize: '11px' }}>
+                        How It Works
+                    </span>
+                    <h2 className="fw-extrabold text-dark tracking-tight" style={{ fontWeight: '800', fontSize: '28px' }}>
+                        Ordering in <span style={{ color: '#f97316' }}>3 Simple Steps</span>
+                    </h2>
+                    <p className="text-secondary small mx-auto" style={{ maxWidth: '450px' }}>
+                        Craving something delicious? Getting your favorite meal delivered to your doorstep has never been this fast and effortless.
+                    </p>
+                </div>
+
+                {/* স্টেপ কার্ডস গ্রিড */}
+                <div className="row g-4 justify-content-center">
+                    {/* স্টেপ ১ */}
+                    <div className="col-12 col-md-4">
+                        <div className="card h-100 text-center p-4 border-0 rounded-4 step-card shadow-sm bg-white" style={{ transition: 'all 0.3s ease-in-out' }}>
+                            <div className="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 position-relative" style={{ width: '70px', height: '70px', background: 'linear-gradient(135deg, #f97316 0%, #ffa14a 100%)', boxShadow: '0 8px 20px rgba(249, 115, 22, 0.2)' }}>
+                                <i className="bi bi-egg-fried fs-2"></i>
+                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark fw-bold d-flex align-items-center justify-content-center" style={{ width: '24px', height: '24px', fontSize: '12px' }}>1</span>
+                            </div>
+                            <h5 className="fw-bold text-dark mb-2" style={{ fontSize: '17px' }}>Pick a Dish You Love</h5>
+                            <p className="text-secondary small mb-0 lh-base">
+                                Browse our rich, curated menu featuring hundreds of delicious dishes tailored just for your taste buds.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* স্টেপ ২ */}
+                    <div className="col-12 col-md-4">
+                        <div className="card h-100 text-center p-4 border-0 rounded-4 step-card shadow-sm bg-white" style={{ transition: 'all 0.3s ease-in-out' }}>
+                            <div className="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 position-relative" style={{ width: '70px', height: '70px', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', boxShadow: '0 8px 20px rgba(30, 41, 59, 0.2)' }}>
+                                <i className="bi bi-geo-alt-fill fs-2" style={{ color: '#f97316' }}></i>
+                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-warning text-dark fw-bold d-flex align-items-center justify-content-center" style={{ width: '24px', height: '24px', fontSize: '12px', background: '#f97316' }}>2</span>
+                            </div>
+                            <h5 className="fw-bold text-dark mb-2" style={{ fontSize: '17px' }}>Share Your Location</h5>
+                            <p className="text-secondary small mb-0 lh-base">
+                                Pin your current address or delivery spot on our map so our quick delivery heroes can find you in a flash.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* স্টেপ ৩ */}
+                    <div className="col-12 col-md-4">
+                        <div className="card h-100 text-center p-4 border-0 rounded-4 step-card shadow-sm bg-white" style={{ transition: 'all 0.3s ease-in-out' }}>
+                            <div className="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 position-relative" style={{ width: '70px', height: '70px', background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)', boxShadow: '0 8px 20px rgba(234, 88, 12, 0.2)' }}>
+                                <i className="bi bi-bicycle fs-2"></i>
+                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark fw-bold d-flex align-items-center justify-content-center" style={{ width: '24px', height: '24px', fontSize: '12px' }}>3</span>
+                            </div>
+                            <h5 className="fw-bold text-dark mb-2" style={{ fontSize: '17px' }}>Enjoy Doorstep Delivery</h5>
+                            <p className="text-secondary small mb-0 lh-base">
+                                Sit back, relax, and track your food live as it arrives fresh, blazing hot, and full of rich flavor.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
   <footer style={{ backgroundColor: '#ffffff', fontFamily: "'Poppins', sans-serif",position: 'relative'}}>
     <div style={{ height: '4px', background: 'linear-gradient(90deg, #f97316 0%, #ea580c 50%, #ffedd5 100%)', width: '100%'}}></div>
@@ -199,7 +261,7 @@ const PublicLayout = ({children}) => {
             <p className="small text-secondary mb-3">Subscribe to get special offers and sweet discounts.</p>
             
             <div className="d-flex p-1 rounded-3" style={{ backgroundColor: '#f1f5f9', border: '1px solid #e2e8f0' }}>
-                <input type="email" className="form-control bg-transparent border-0 shadow-none ps-3 py-2 text-dark" placeholder="Your email..."  style={{ fontSize: '14px' }}/>
+                <input type="email" className="custom-placeholder form-control bg-transparent border-0 shadow-none ps-3 py-2 text-dark" placeholder="Your email..."  style={{ fontSize: '14px' }}/>
                 <button className="btn btn-warning px-4 fw-semibold text-white rounded-3 shadow-sm" style={{ background: '#f97316', border: 'none', fontSize: '13.5px' }} type="button">
                     Join
                 </button>
@@ -226,7 +288,9 @@ const PublicLayout = ({children}) => {
       .custom-footer-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; left: 0; background-color: #f97316;transition: width 0.2s ease;}
       .custom-footer-link:hover::after {width: 100%;}
       .logout-nav-btn:hover { background-color: rgba(220, 53, 69, 0.08) !important;transform: scale(1.02);}
-      .user-welcome-badge {box-shadow: 0 2px 8px rgba(0,0,0,0.02);}`}
+      .user-welcome-badge {box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
+      .step-card:hover {transform: translateY(-8px);box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08) !important;background-color: #ffffff !important;}
+      .custom-placeholder::placeholder {color: #94a3b8 !important;opacity: 1 !important;}`}
     </style>
   </footer>
   </>
