@@ -3,6 +3,7 @@ import { toast } from "react-toastify"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import '../styles/adminlogin.css'
+import PublicLayout from '../components/PublicLayout'
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
@@ -34,7 +35,8 @@ const AdminLogin = () => {
     }
   }
   return (
-    <div className="d-flex justify-content-center align-items-center" style={{minHeight: "100vh", background: "linear-gradient(135deg, #0f172a, #111827, #1e293b)"}}>
+    <PublicLayout>
+      <div className="d-flex justify-content-center align-items-center" style={{minHeight: "100vh", background: "linear-gradient(135deg, #0f172a, #111827, #1e293b)"}}>
         <div className="card border-0 p-4" style={{width: "100%", maxWidth: "420px", borderRadius: "24px", background: "rgba(255,255,255,0.08)", backdropFilter: "blur(15px)", boxShadow: "0 10px 40px rgba(0,0,0,0.4)"}}>
             {/* Top Icon */}
             <div className="text-center mb-4">
@@ -80,6 +82,7 @@ const AdminLogin = () => {
             </form>
         </div>
     </div>
+    </PublicLayout>
   )
 }
 

@@ -55,7 +55,7 @@ const PublicLayout = ({children}) => {
               </li>
 
               <li className="nav-item mt-2 mt-lg-0">
-                <Link to="/admin" className="nav-link px-4 py-2 rounded-3 fw-semibold text-white d-flex align-items-center justify-content-center gap-2 shadow-sm" style={{ fontSize: '14px', backgroundColor: '#1e293b',  border: 'none', transition: 'all 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#0f172a'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#1e293b'}>
+                <Link to="/admin-login" className="nav-link px-4 py-2 rounded-3 fw-semibold text-white d-flex align-items-center justify-content-center gap-2 shadow-sm" style={{ fontSize: '14px', backgroundColor: '#1e293b',  border: 'none', transition: 'all 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#0f172a'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#1e293b'}>
                     <i className="bi bi-speedometer2"></i> Admin Panel
                 </Link>
               </li>

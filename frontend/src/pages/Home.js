@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../components/PublicLayout';
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        console.log("Searching for:", searchQuery);
-        // এখানে আপনার সার্চ লজিক বা রাউটিং যুক্ত করতে পারেন
-    };
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if(searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
   return (
     <PublicLayout>
       <div className="position-relative d-flex align-items-center overflow-hidden" style={{ minHeight: '85vh', backgroundImage: 'linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop")', backgroundSize: 'cover', backgroundPosition: 'center',fontFamily: "'Poppins', sans-serif"}}>
@@ -31,11 +34,11 @@ const Home = () => {
                   Discover top-rated restaurants, street foods, and premium cuisines near you. Your favorite meal is just one click away.
               </p>
 
-              <form onSubmit={handleSearch} className="mx-auto" style={{ maxWidth: '650px' }}>
+              <form onSubmit={handleSearchSubmit} className="mx-auto" style={{ maxWidth: '650px' }}>
                 <div className="p-2 rounded-4 shadow-lg d-flex flex-column flex-sm-row gap-2" style={{ background: 'rgba(255, 255, 255, 0.12)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',border: '1px solid rgba(255, 255, 255, 0.2)'}}>
                   <div className="d-flex align-items-center flex-grow-1 px-2 position-relative py-2 py-sm-0">
                     <i className="bi bi-search text-white opacity-75 fs-5 ms-2"></i>
-                    <input type="text" className="form-control bg-transparent border-0 text-white placeholder-light shadow-none ps-3" placeholder="Search for biryani, burgers, pizza..." style={{ fontSize: '15px' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+                    <input type="text" name='q' className="form-control bg-transparent border-0 text-white placeholder-light shadow-none ps-3" placeholder="Search for biryani, burgers, pizza..." style={{ fontSize: '15px' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
                     <button type="button" className="btn btn-link p-0 text-warning text-decoration-none me-2 shadow-none d-flex align-items-center gap-1" style={{ fontSize: '13px' }}>
                         <i className="bi bi-geo-alt-fill"></i>
                         <span className="d-none d-md-inline">Nearby</span>

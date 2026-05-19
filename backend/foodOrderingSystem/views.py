@@ -8,6 +8,7 @@ from .serializers import *
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.db.models import Q
 
 
 #<--------ADMIN-------->
@@ -115,3 +116,21 @@ class FoodDetailAPIView(APIView):
         food = get_object_or_404(Food, pk=pk)
         food.delete()
         return Response({"message": "Food item deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+# Search Page 
+@api_view(['GET'])
+def search_food(request):
+    query = request.GET.get('q', '')
+    
+    if query:
+        foods = Food.objects.filter(
+            Q(item_name__icontains=query) | 
+            Q(item_description__icontains=query)
+        )
+    else:
+        foods = Food.objects.all()
+        
+    serializer = FoodSerializer(foods, many=True, context={'request': request})
+    return Response(serializer.data)
