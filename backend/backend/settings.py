@@ -95,3 +95,9 @@ STATIC_URL = 'static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+AUTHENTICATION_BACKENDS = [
+    'foodOrderingSystem.backends.EmailOrMobileBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]

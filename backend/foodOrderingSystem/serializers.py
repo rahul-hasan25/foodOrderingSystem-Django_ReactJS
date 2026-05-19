@@ -13,27 +13,18 @@ class FoodSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.category_name', read_only=True)
 
     class Meta:
-        model = Food
+        model  = Food
         fields = ['id', 'category', 'category_name', 'item_name', 'item_price', 'item_description', 'image', 'item_quantity', 'is_available']
         
         
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=6)
+    password        = serializers.CharField(write_only=True, min_length=6)
     repeat_password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = User
-        fields = [
-            'id',
-            'first_name',
-            'last_name',
-            'email',
-            'mobile',
-            'password',
-            'repeat_password',
-            'reg_date'
-        ]
+        model  = User
+        fields = ['id','first_name','last_name','email','mobile','password','repeat_password','reg_date']
         read_only_fields = ['reg_date']
 
     def validate_email(self, value):
@@ -43,16 +34,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs['password'] != attrs['repeat_password']:
-            raise serializers.ValidationError({
-                "repeat_password": "Passwords do not match."
-            })
+            raise serializers.ValidationError({"repeat_password": "Passwords do not match."})
         return attrs
 
     def create(self, validated_data):
         validated_data.pop('repeat_password')
-
-        validated_data['password'] = make_password(
-            validated_data['password']
-        )
-
+        validated_data['password'] = make_password(validated_data['password'])
         return super().create(validated_data)
