@@ -134,3 +134,12 @@ def search_food(request):
         
     serializer = FoodSerializer(foods, many=True, context={'request': request})
     return Response(serializer.data)
+
+
+# Home Page Food Item
+@api_view(['GET'])
+def get_homepage_featured_menu(request):
+    featured_foods = Food.objects.filter(is_available=True).order_by('?')[:8]
+    
+    serializer = FoodSerializer(featured_foods, many=True, context={'request': request})
+    return Response(serializer.data)

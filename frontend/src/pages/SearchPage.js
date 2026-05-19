@@ -97,14 +97,14 @@ const SearchPage = () => {
 
                                         <div className="d-flex align-items-center justify-content-between mt-3 pt-3 border-top" style={{ borderColor: '#f1f5f9' }}>
                                             <div>
-                                                <small className="text-muted d-block" style={{ fontSize: '11px' }}>Price</small>
+                                                <small className="text-muted d-block" style={{ fontSize: '11px' }}>Price (BDT)</small>
                                                 <span className="fw-extrabold fs-4 text-dark" style={{ letterSpacing: '-0.5px' }}>
-                                                    ${food.item_price}
+                                                    {food.item_price}
                                                 </span>
                                             </div>
 
                                             {food.is_available ? (
-                                                <button className="btn fw-bold px-4 py-2 rounded-3 text-white d-flex align-items-center gap-2 order-now-btn" style={{ background: 'linear-gradient(135deg, #f97316, #ea580c)', border: 'none', fontSize: '13.5px', transition: 'all 0.2s'}}>
+                                                <button className="btn fw-bold px-3 py-2 rounded-3 text-white d-flex align-items-center gap-1 order-now-btn" style={{ background: 'linear-gradient(135deg, #f97316, #ea580c)', border: 'none', fontSize: '13.5px', transition: 'all 0.2s'}}>
                                                     Order <i className="bi bi-arrow-right-short fs-5"></i>
                                                 </button>
                                             ) : (
