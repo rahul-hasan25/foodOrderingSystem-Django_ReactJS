@@ -11,6 +11,7 @@ import ManageCategory from './pages/ManageCategory';
 import AddFood from './pages/AddFood';
 import ManageFood from './pages/ManageFood';
 import SearchPage from './pages/SearchPage';
+import UserRegister from './components/UserRegister';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path='/add-food' element={<AddFood/>} />
         <Route path='/manage-food' element={<ManageFood/>} />
         <Route path='/search' element={<SearchPage/>} />
+        <Route path='/user/register' element={<UserRegister/>} />
       </Routes>
     </BrowserRouter>
   );

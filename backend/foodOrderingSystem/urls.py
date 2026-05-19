@@ -13,4 +13,5 @@ urlpatterns = [
     path('foods/<int:pk>/', FoodDetailAPIView.as_view(), name='api-food-detail'),
     path('search/', views.search_food, name='search_food'),
     path('homepage-menu/', views.get_homepage_featured_menu, name='homepage_menu'),
+    path('user/register/', register_customer),
 ]

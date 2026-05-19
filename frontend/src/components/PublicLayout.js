@@ -43,7 +43,7 @@ const PublicLayout = ({children}) => {
               </li>
 
               <li className="nav-item">
-                <Link to="/register" className={`nav-link px-2 py-2 rounded-3 fw-semibold d-flex align-items-center gap-1 transition-all ${isActive('/register') ? 'text-warning bg-warning bg-opacity-10' : 'text-secondary'}`} style={{ fontSize: '14.5px', transition: 'all 0.2s' }}>
+                <Link to="/user/register" className={`nav-link px-2 py-2 rounded-3 fw-semibold d-flex align-items-center gap-1 transition-all ${isActive('/user/register') ? 'text-warning bg-warning bg-opacity-10' : 'text-secondary'}`} style={{ fontSize: '14.5px', transition: 'all 0.2s' }}>
                     <i className="bi bi-person-plus fs-5"></i> Register
                 </Link>
               </li>

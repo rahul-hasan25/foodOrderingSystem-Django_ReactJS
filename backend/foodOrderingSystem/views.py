@@ -143,3 +143,21 @@ def get_homepage_featured_menu(request):
     
     serializer = FoodSerializer(featured_foods, many=True, context={'request': request})
     return Response(serializer.data)
+
+
+
+# User Registration
+@api_view(['POST'])
+def register_customer(request):
+    serializer = UserRegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            "success": True,
+            "message": "Welcome aboard! Your account has been created successfully."
+        }, status=status.HTTP_201_CREATED)
+    
+    return Response({
+        "success": False,
+        "errors": serializer.errors
+    }, status=status.HTTP_400_BAD_REQUEST)
