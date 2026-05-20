@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
-from .models import User as CustomUser # আপনার কাস্টম ইউজার মডেল
+from .models import User as CustomUser
 
 class EmailOrMobileBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):

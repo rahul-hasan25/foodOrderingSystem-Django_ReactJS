@@ -136,7 +136,7 @@ const UserRegister = () => {
 
                                     <div className="text-center mt-4">
                                         <p className="small text-secondary mb-0">
-                                            Already a member? <Link to="/login" className="fw-bold text-decoration-none ms-1" style={{ color: '#f97316' }}>Sign In</Link>
+                                            Already a member? <Link to="/user/login" className="fw-bold text-decoration-none ms-1" style={{ color: '#f97316' }}>Sign In</Link>
                                         </p>
                                     </div>
                                 </div>

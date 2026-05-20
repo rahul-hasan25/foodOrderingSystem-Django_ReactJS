@@ -10,7 +10,8 @@ const AdminHeader = ({toggleSidebar, sidebarOpen}) => {
 
   const handleLogoutClick = () => {
     localStorage.removeItem('adminUser');
-    navigate('/admin-login');
+    localStorage.removeItem('adminToken'); 
+    navigate('/', { replace: true });
   };
   return (
     <>

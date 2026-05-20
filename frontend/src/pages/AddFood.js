@@ -20,7 +20,7 @@ const AddFood = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const CATEGORY_API_URL = "http://127.0.0.1:8000/api/categories-list/";
-    const ADD_FOOD_API_URL = "http://127.0.0.1:8000/api/foods/add/";
+    const ADD_FOOD_API_URL = "http://127.0.0.1:8000/api/foods_add/";
 
     useEffect(() => {
         const fetchCategories = async () => {

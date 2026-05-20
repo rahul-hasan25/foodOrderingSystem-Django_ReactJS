@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const PublicLayout = ({children}) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isActive = (path) => location.pathname === path;
   const currentYear = new Date().getFullYear();
 
-  const navigate = useNavigate();
-
   const [userId, setUserId] = useState(localStorage.getItem('userId'));
   const [userName, setUserName] = useState(localStorage.getItem('userName'));
+  
+  const [cartCount, setCartCount] = useState(0);
 
+  // Sync session authentication variables when location changes
   useEffect(() => {
     setUserId(localStorage.getItem('userId'));
     setUserName(localStorage.getItem('userName'));
@@ -18,12 +21,41 @@ const PublicLayout = ({children}) => {
 
   const isLoggedIn = !!userId;
 
+  // Calls database endpoint for active counts
+  const fetchCountData = useCallback(async () => {
+    const activeId = localStorage.getItem('userId') || userId;
+    if (!activeId) {
+      setCartCount(0);
+      return;
+    }
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/api/cart/count/', {
+        headers: { 'X-User-Id': activeId }
+      });
+      setCartCount(response.data.cart_count);
+    } catch (error) {
+      console.error("Error synchronizing active cart badge count metrics.", error);
+    }
+  }, [userId]);
+
+  // Listens to location adjustments and polls updates periodically
+  useEffect(() => {
+    fetchCountData();
+    window.addEventListener('cartUpdated', fetchCountData);  // Listen for the instant event coming from Cart or Menu components
+    
+    return () => {
+      window.removeEventListener('cartUpdated', fetchCountData);
+    };
+  }, [location, fetchCountData]);
+
   const handleLogout = () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('userName');
     localStorage.removeItem('user');
+    setCartCount(0);
     navigate('/user/login');
   };
+
   return (
     <>
     <nav className="navbar navbar-expand-lg navbar-light sticky-top bg-white" style={{ boxShadow: '0 4px 30px rgba(0, 0, 0, 0.03)', borderBottom: '1px solid #f1f5f9', padding: '5px 0', fontFamily: "'Poppins', sans-serif"}}>
@@ -94,9 +126,14 @@ const PublicLayout = ({children}) => {
 
               <li className="nav-item">
                 <Link to="/cart" className={`nav-link px-2 py-2 rounded-3 fw-semibold d-flex align-items-center gap-1 transition-all ${isActive('/cart') ? 'text-warning bg-warning bg-opacity-10' : 'text-secondary'}`} style={{ fontSize: '14.5px', transition: 'all 0.2s' }}>
-                  <div className="position-relative d-flex align-items-center gap-1">
+                  <div className="position-relative d-flex align-items-center gap-1 pe-2">
                     <i className="bi bi-cart3 fs-5"></i> Cart
-                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style={{ fontSize: '9px', padding: '4px 6px', marginTop: '-2px' }}></span>
+                    
+                    {cartCount > 0 && (
+                      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger badge-pop-animation" style={{ fontSize: '10px', padding: '4px 7px', marginTop: '-4px', fontWeight: '700', boxShadow: '0 2px 8px rgba(220, 53, 69, 0.4)'}} >
+                        {cartCount}
+                      </span>
+                    )}
                   </div>
                 </Link>
               </li>
@@ -147,66 +184,61 @@ const PublicLayout = ({children}) => {
   <div>{children}</div>
 
   <section className="py-5" style={{ backgroundColor: '#f8fafc', fontFamily: "'Poppins', sans-serif", borderTop: '1px solid #f1f5f9' }}>
-            <div className="container py-4">
-                {/* সেকশন হেডার */}
-                <div className="text-center mb-5">
-                    <span className="badge px-3 py-2 rounded-pill mb-2 fw-bold text-uppercase tracking-wider" style={{ backgroundColor: 'rgba(249, 115, 22, 0.1)', color: '#f97316', fontSize: '11px' }}>
-                        How It Works
-                    </span>
-                    <h2 className="fw-extrabold text-dark tracking-tight" style={{ fontWeight: '800', fontSize: '28px' }}>
-                        Ordering in <span style={{ color: '#f97316' }}>3 Simple Steps</span>
-                    </h2>
-                    <p className="text-secondary small mx-auto" style={{ maxWidth: '450px' }}>
-                        Craving something delicious? Getting your favorite meal delivered to your doorstep has never been this fast and effortless.
-                    </p>
+    <div className="container py-4">
+      <div className="text-center mb-5">
+        <span className="badge px-3 py-2 rounded-pill mb-2 fw-bold text-uppercase tracking-wider" style={{ backgroundColor: 'rgba(249, 115, 22, 0.1)', color: '#f97316', fontSize: '11px' }}>
+            How It Works
+        </span>
+        <h2 className="fw-extrabold text-dark tracking-tight" style={{ fontWeight: '800', fontSize: '28px' }}>
+            Ordering in <span style={{ color: '#f97316' }}>3 Simple Steps</span>
+        </h2>
+        <p className="text-secondary small mx-auto" style={{ maxWidth: '450px' }}>
+            Craving something delicious? Getting your favorite meal delivered to your doorstep has never been this fast and effortless.
+        </p>
+      </div>
+
+      <div className="row g-4 justify-content-center">
+        <div className="col-12 col-md-4">
+            <div className="card h-100 text-center p-4 border-0 rounded-4 step-card shadow-sm bg-white" style={{ transition: 'all 0.3s ease-in-out' }}>
+                <div className="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 position-relative" style={{ width: '70px', height: '70px', background: 'linear-gradient(135deg, #f97316 0%, #ffa14a 100%)', boxShadow: '0 8px 20px rgba(249, 115, 22, 0.2)' }}>
+                    <i className="bi bi-egg-fried fs-2"></i>
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark fw-bold d-flex align-items-center justify-content-center" style={{ width: '24px', height: '24px', fontSize: '12px' }}>1</span>
                 </div>
-
-                {/* স্টেপ কার্ডস গ্রিড */}
-                <div className="row g-4 justify-content-center">
-                    {/* স্টেপ ১ */}
-                    <div className="col-12 col-md-4">
-                        <div className="card h-100 text-center p-4 border-0 rounded-4 step-card shadow-sm bg-white" style={{ transition: 'all 0.3s ease-in-out' }}>
-                            <div className="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 position-relative" style={{ width: '70px', height: '70px', background: 'linear-gradient(135deg, #f97316 0%, #ffa14a 100%)', boxShadow: '0 8px 20px rgba(249, 115, 22, 0.2)' }}>
-                                <i className="bi bi-egg-fried fs-2"></i>
-                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark fw-bold d-flex align-items-center justify-content-center" style={{ width: '24px', height: '24px', fontSize: '12px' }}>1</span>
-                            </div>
-                            <h5 className="fw-bold text-dark mb-2" style={{ fontSize: '17px' }}>Pick a Dish You Love</h5>
-                            <p className="text-secondary small mb-0 lh-base">
-                                Browse our rich, curated menu featuring hundreds of delicious dishes tailored just for your taste buds.
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* স্টেপ ২ */}
-                    <div className="col-12 col-md-4">
-                        <div className="card h-100 text-center p-4 border-0 rounded-4 step-card shadow-sm bg-white" style={{ transition: 'all 0.3s ease-in-out' }}>
-                            <div className="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 position-relative" style={{ width: '70px', height: '70px', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', boxShadow: '0 8px 20px rgba(30, 41, 59, 0.2)' }}>
-                                <i className="bi bi-geo-alt-fill fs-2" style={{ color: '#f97316' }}></i>
-                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-warning text-dark fw-bold d-flex align-items-center justify-content-center" style={{ width: '24px', height: '24px', fontSize: '12px', background: '#f97316' }}>2</span>
-                            </div>
-                            <h5 className="fw-bold text-dark mb-2" style={{ fontSize: '17px' }}>Share Your Location</h5>
-                            <p className="text-secondary small mb-0 lh-base">
-                                Pin your current address or delivery spot on our map so our quick delivery heroes can find you in a flash.
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* স্টেপ ৩ */}
-                    <div className="col-12 col-md-4">
-                        <div className="card h-100 text-center p-4 border-0 rounded-4 step-card shadow-sm bg-white" style={{ transition: 'all 0.3s ease-in-out' }}>
-                            <div className="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 position-relative" style={{ width: '70px', height: '70px', background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)', boxShadow: '0 8px 20px rgba(234, 88, 12, 0.2)' }}>
-                                <i className="bi bi-bicycle fs-2"></i>
-                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark fw-bold d-flex align-items-center justify-content-center" style={{ width: '24px', height: '24px', fontSize: '12px' }}>3</span>
-                            </div>
-                            <h5 className="fw-bold text-dark mb-2" style={{ fontSize: '17px' }}>Enjoy Doorstep Delivery</h5>
-                            <p className="text-secondary small mb-0 lh-base">
-                                Sit back, relax, and track your food live as it arrives fresh, blazing hot, and full of rich flavor.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <h5 className="fw-bold text-dark mb-2" style={{ fontSize: '17px' }}>Pick a Dish You Love</h5>
+                <p className="text-secondary small mb-0 lh-base">
+                    Browse our rich, curated menu featuring hundreds of delicious dishes tailored just for your taste buds.
+                </p>
             </div>
-        </section>
+        </div>
+
+        <div className="col-12 col-md-4">
+          <div className="card h-100 text-center p-4 border-0 rounded-4 step-card shadow-sm bg-white" style={{ transition: 'all 0.3s ease-in-out' }}>
+            <div className="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 position-relative" style={{ width: '70px', height: '70px', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', boxShadow: '0 8px 20px rgba(30, 41, 59, 0.2)' }}>
+              <i className="bi bi-geo-alt-fill fs-2" style={{ color: '#f97316' }}></i>
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-warning text-dark fw-bold d-flex align-items-center justify-content-center" style={{ width: '24px', height: '24px', fontSize: '12px', background: '#f97316' }}>2</span>
+            </div>
+            <h5 className="fw-bold text-dark mb-2" style={{ fontSize: '17px' }}>Share Your Location</h5>
+            <p className="text-secondary small mb-0 lh-base">
+                Pin your current address or delivery spot on our map so our quick delivery heroes can find you in a flash.
+            </p>
+          </div>
+        </div>
+
+        <div className="col-12 col-md-4">
+          <div className="card h-100 text-center p-4 border-0 rounded-4 step-card shadow-sm bg-white" style={{ transition: 'all 0.3s ease-in-out' }}>
+            <div className="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 position-relative" style={{ width: '70px', height: '70px', background: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)', boxShadow: '0 8px 20px rgba(234, 88, 12, 0.2)' }}>
+                <i className="bi bi-bicycle fs-2"></i>
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark fw-bold d-flex align-items-center justify-content-center" style={{ width: '24px', height: '24px', fontSize: '12px' }}>3</span>
+            </div>
+            <h5 className="fw-bold text-dark mb-2" style={{ fontSize: '17px' }}>Enjoy Doorstep Delivery</h5>
+            <p className="text-secondary small mb-0 lh-base">
+                Sit back, relax, and track your food live as it arrives fresh, blazing hot, and full of rich flavor.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <footer style={{ backgroundColor: '#ffffff', fontFamily: "'Poppins', sans-serif",position: 'relative'}}>
     <div style={{ height: '4px', background: 'linear-gradient(90deg, #f97316 0%, #ea580c 50%, #ffedd5 100%)', width: '100%'}}></div>
@@ -290,11 +322,13 @@ const PublicLayout = ({children}) => {
       .logout-nav-btn:hover { background-color: rgba(220, 53, 69, 0.08) !important;transform: scale(1.02);}
       .user-welcome-badge {box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
       .step-card:hover {transform: translateY(-8px);box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08) !important;background-color: #ffffff !important;}
-      .custom-placeholder::placeholder {color: #94a3b8 !important;opacity: 1 !important;}`}
+      .custom-placeholder::placeholder {color: #94a3b8 !important;opacity: 1 !important;}
+      @keyframes popIn { 0% { transform: translate(100%, -50%) scale(0.4); opacity: 0; } 80% { transform: translate(100%, -50%) scale(1.15); }100% { transform: translate(100%, -50%) scale(1); opacity: 1; }}
+      .badge-pop-animation {animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;}`}
     </style>
   </footer>
   </>
   )
 }
 
-export default PublicLayout
+export default PublicLayout;

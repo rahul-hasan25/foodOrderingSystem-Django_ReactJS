@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import AdminLayout from '../components/AdminLayout'
 import '../styles/category.css'
 
@@ -10,7 +10,7 @@ const ManageFood = () => {
     const [searchInput, setSearchInput] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
 
-    const API_URL = "http://127.0.0.1:8000/api/foods/";
+    const API_URL = "http://127.0.0.1:8000/api/food_manage/";
 
     const fetchFoods = async () => {
         setIsLoading(true);

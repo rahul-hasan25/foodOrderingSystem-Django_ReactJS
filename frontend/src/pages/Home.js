@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PublicLayout from '../components/PublicLayout';
 
 const Home = () => {
@@ -135,9 +135,9 @@ const Home = () => {
                     </div>
 
                     <div className="card-body p-4 d-flex flex-column">
-                      <h5 className="card-title fw-bold text-dark text-truncate mb-2" style={{ fontSize: '17px' }}>
+                      <Link to={`/food/${food.id}`} className="card-title fw-bold text-dark text-truncate mb-2 text-decoration-none" style={{ fontSize: '17px' }}>
                           {food.item_name}
-                      </h5>
+                      </Link>
                       
                       <p className="card-text text-secondary small flex-grow-1 line-clamp-2 mb-3" style={{ display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', overflow: 'hidden', fontSize: '13px', lineHeight: '1.5' }}>
                           {food.item_description || "Savor the rich, authentic flavors of this specially prepared premium dish."}
@@ -150,9 +150,9 @@ const Home = () => {
                             </span>
                         </div>
 
-                        <button className="btn d-flex align-items-center justify-content-center rounded-3 p-0 home-cart-btn" style={{ width: '40px',  height: '40px', backgroundColor: '#f1f5f9', color: '#1e293b',  border: 'none', transition: 'all 0.25s ease'}}>
+                        <Link to={`/food/${food.id}`} className="btn d-flex align-items-center justify-content-center rounded-3 p-0 home-cart-btn" style={{ width: '40px',  height: '40px', backgroundColor: '#f1f5f9', color: '#1e293b',  border: 'none', transition: 'all 0.25s ease'}}>
                           <i className="bi bi-basket3-fill fs-5"></i>
-                        </button>
+                        </Link>
                       </div>
                   </div>
                 </div>

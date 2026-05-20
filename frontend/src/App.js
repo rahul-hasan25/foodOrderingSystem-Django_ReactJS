@@ -13,11 +13,13 @@ import ManageFood from './pages/ManageFood';
 import SearchPage from './pages/SearchPage';
 import UserRegister from './components/UserRegister';
 import UserLogin from './components/UserLogin';
+import FoodDetails from './pages/FoodDetails';
+import Cart from './pages/Cart';
 
 function App() {
   return (
     <BrowserRouter>
-      <ToastContainer position='top-right' autoClose={2000} />
+      <ToastContainer position="top-right" autoClose={2000} style={{width: '100%',maxWidth: '600px',}} toastStyle={{whiteSpace: 'nowrap',width: 'fit-content',minWidth: '300px',}} />
       <Routes>
         <Route path='/' element={<Home/>} />
         <Route path='/admin-login' element={<AdminLogin/>} />
@@ -29,6 +31,8 @@ function App() {
         <Route path='/search' element={<SearchPage/>} />
         <Route path='/user/register' element={<UserRegister/>} />
         <Route path='/user/login' element={<UserLogin/>} />
+        <Route path='/food/:id' element={<FoodDetails/>} />
+        <Route path='/cart' element={<Cart/>} />
       </Routes>
     </BrowserRouter>
   );
