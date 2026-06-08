@@ -198,7 +198,7 @@ const Cart = () => {
                                     <span className="fw-black text-danger fs-3" style={{ fontWeight: 900 }}>৳{cartData.summary.grand_total.toFixed(2)}</span>
                                 </div>
 
-                                <button onClick={() => toast.info("Checkout process integration routing can be safely attached here.")} className="btn btn-dark w-100 fw-bold border-0 text-white shadow-sm premium-action-btn" style={{ height: '54px', borderRadius: '12px', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)' }}>
+                                <button onClick={() => navigate('/checkout')} className="btn btn-dark w-100 fw-bold border-0 text-white shadow-sm premium-action-btn" style={{ height: '54px', borderRadius: '12px', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)' }}>
                                     Proceed to Secure Checkout <i className="bi bi-arrow-right ms-2"></i>
                                 </button>
 

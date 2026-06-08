@@ -43,7 +43,7 @@ const UserRegister = () => {
             const response = await axios.post('http://127.0.0.1:8000/api/user/register/', formData);
             if (response.data.success) {
                 setSuccessMsg(response.data.message);
-                setTimeout(() => navigate('/login'), 2500);
+                setTimeout(() => navigate('/user/login'), 2500);
             }
         } catch (error) {
             if (error.response && error.response.data.errors) {

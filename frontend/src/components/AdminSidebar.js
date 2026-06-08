@@ -183,7 +183,7 @@ const AdminSidebar = () => {
                 <i className={`bi bi-chevron-down chevron${open.orders ? " open" : ""}`} />
               </button>
               <div className={`dropdown-wrap${open.orders ? " open" : ""}`}>
-                <Link href="#manage-food" className={`sub-item${active === "All Orders" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("All Orders"); }}>
+                <Link to='/all-orders' className={`sub-item${active === "All Orders" ? " active" : ""}`} onClick={() => setActive("All Orders")}>
                   <i className="bi bi-clipboard-data text-secondary sub-icon" /> All Orders
                 </Link>
 

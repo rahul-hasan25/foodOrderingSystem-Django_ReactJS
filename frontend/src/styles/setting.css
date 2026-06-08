@@ -1,0 +1,81 @@
+:root {
+  --fex-bg-dark: #0f172a;
+  --fex-card-dark: #1e293b;
+  --fex-text-dark: #f8fafc;
+  --fex-primary-orange: #ff6b6b;
+  --fex-accent-amber: #ffb84d;
+  --fex-danger-crimson: #ef4444;
+}
+
+/* Medium Unified Typography Standard */
+.fex-settings-viewport,
+.fex-settings-viewport input,
+.fex-settings-viewport select,
+.fex-settings-viewport button {
+  font-size: 15px !important;
+  letter-spacing: -0.01em;
+}
+
+/* Glassmorphic Layer Foundations */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(209, 213, 219, 0.3) !important;
+}
+
+body.dark-mode-active .glass-panel {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Modern Input Fields */
+.fex-custom-input {
+  border: 2px solid #e2e8f0;
+  padding: 0.65rem 1rem;
+  transition: all 0.25s ease;
+  background-color: #ffffff;
+}
+
+body.dark-mode-active .fex-custom-input {
+  background-color: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+.fex-custom-input:focus {
+  border-color: var(--fex-accent-amber);
+  box-shadow: 0 0 0 4px rgba(255, 184, 77, 0.15);
+  outline: none;
+}
+
+/* Soft Hover Item States */
+.fex-nav-pill {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+
+.fex-nav-pill:hover {
+  background-color: rgba(241, 245, 249, 0.9);
+  transform: translateX(3px);
+}
+
+body.dark-mode-active .fex-nav-pill:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Smooth Sidebar Transition Overlays */
+@media (max-width: 767.98px) {
+  .custom-sidebar-drawer {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 290px;
+    height: 100vh;
+    transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1050;
+  }
+  .custom-sidebar-drawer.show {
+    left: 0;
+  }
+}

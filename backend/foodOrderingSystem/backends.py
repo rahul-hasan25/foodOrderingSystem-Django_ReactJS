@@ -5,8 +5,20 @@ from .models import User as CustomUser
 
 class EmailOrMobileBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
+        if not username:
+            return None
+            
         try:
-            user = CustomUser.objects.get(Q(email=username) | Q(mobile=username))
+            # Clean up the input string
+            username_str = str(username).strip()
+            
+            # Check if the input could be a mobile number (only contains digits)
+            if username_str.isdigit():
+                user = CustomUser.objects.get(mobile=username_str)
+            else:
+                # If it's text, only look up via email address
+                user = CustomUser.objects.get(email=username_str)
+                
         except CustomUser.DoesNotExist:
             return None
         

@@ -34,4 +34,20 @@ urlpatterns = [
     path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     
     path('cart/count/', views.get_cart_count, name='get_cart_count'),  # Cart Icon Count
+    
+    path('checkout/addresses/', views.checkout_address_view, name='checkout_addresses'),  # Checkout
+    path('checkout/place-order/', views.place_order_checkout, name='place_order_checkout'),
+    
+    path('my-orders/', MyOrdersListView.as_view(), name='my-orders-list'),  # My Order Page
+    
+    path('user/profile/', UserProfileDetailView.as_view(), name='user-profile-detail'),   # My Profile
+    
+    
+    path('settings/profile/', views.UserSettingsCoreAPIView.as_view(), name='settings-profile'),  # User Setting
+    path('settings/security/', views.UpdateSecurityCredentialsAPIView.as_view(), name='settings-security'),
+    path('settings/addresses/', views.AddressSettingsCollectionAPIView.as_view(), name='settings-addresses'),
+    path('settings/profile/purge/', PermanentlyDeleteProfileAPIView.as_view(), name='settings-profile-purge'),
+    
+    path('admin/all-orders/', AdminAllOrdersManagementAPI.as_view(), name='admin_all_orders'),  # Admin Orders ---> All Orders
+    path('admin/all-orders/<int:pk>/', AdminAllOrdersManagementAPI.as_view(), name='admin_modify_order'),
 ]

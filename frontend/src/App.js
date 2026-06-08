@@ -15,6 +15,11 @@ import UserRegister from './components/UserRegister';
 import UserLogin from './components/UserLogin';
 import FoodDetails from './pages/FoodDetails';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import MyOrders from './pages/MyOrders';
+import UserMyProfile from './pages/UserMyProfile';
+import UserSetting from './pages/UserSetting';
+import AllOrders from './pages/AllOrders';
 
 function App() {
   return (
@@ -28,11 +33,17 @@ function App() {
         <Route path='/manage-category' element={<ManageCategory/>} />
         <Route path='/add-food' element={<AddFood/>} />
         <Route path='/manage-food' element={<ManageFood/>} />
+        <Route path='/all-orders' element={<AllOrders/>} />
+
         <Route path='/search' element={<SearchPage/>} />
         <Route path='/user/register' element={<UserRegister/>} />
         <Route path='/user/login' element={<UserLogin/>} />
         <Route path='/food/:id' element={<FoodDetails/>} />
         <Route path='/cart' element={<Cart/>} />
+        <Route path='/checkout' element={<Checkout/>} />
+        <Route path='/my-orders' element={<MyOrders/>} />
+        <Route path='/user/profile' element={<UserMyProfile/>} />
+        <Route path='/user/settings' element={<UserSetting/>} />
       </Routes>
     </BrowserRouter>
   );

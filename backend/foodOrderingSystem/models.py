@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 import uuid
+from django.conf import settings
 
 
 class User(models.Model):
@@ -85,3 +86,73 @@ class Orders(models.Model):
     def __str__(self):
         status = f"Placed ({self.order_number})" if self.is_order_placed else "In-Cart"
         return f"{self.user.first_name} - {self.food.item_name} ({status})"
+    
+    
+
+
+
+class OrderAddress(models.Model):
+    ADDRESS_TAG_CHOICES  = [('HOME', 'Home (All-Day Delivery)'),('OFFICE', 'Office (Work Hours Delivery)'),('OTHER', 'Other (Custom/Friends)'),]
+    user                 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='delivery_addresses',help_text="The customer who owns this address record.")
+    contact_person_name  = models.CharField(max_length=150, help_text="Full name of the individual receiving the package.")
+    contact_person_phone = models.CharField(max_length=20, help_text="Primary phone number for delivery rider coordination.")
+    alternative_phone    = models.CharField(max_length=20, blank=True, null=True, help_text="Secondary number if the primary contact is unreachable.")
+    street_address       = models.CharField(max_length=255, help_text="House number, apartment/suite number, block, or street identifier.")
+    area_or_neighborhood = models.CharField(max_length=150, help_text="Specific area, block, or neighborhood (e.g., Gulshan, Dhanmondi, Mirpur).")
+    city_or_division     = models.CharField(max_length=100,help_text="The city or administrative division name (e.g., Dhaka, Chattogram).")
+    postal_code          = models.CharField(max_length=20,blank=True, null=True,help_text="Postal or ZIP code.")
+    delivery_landmark    = models.TextField(blank=True, null=True, help_text="Any notable landmarks nearby (e.g., 'Opposite the Jamuna Future Park gate').")
+    latitude             = models.DecimalField(max_length=50, max_digits=9, decimal_places=6, blank=True, null=True, help_text="GPS Latitude tracking coordinate map marker pin.")
+    longitude            = models.DecimalField(max_length=50,max_digits=9, decimal_places=6,blank=True, null=True, help_text="GPS Longitude tracking coordinate map marker pin.")
+    address_tag          = models.CharField(max_length=10, choices=ADDRESS_TAG_CHOICES, default='HOME',help_text="Categorization label for rapid user selection dashboards.")
+    is_default           = models.BooleanField(default=False, help_text="Designates if this profile is preferred for instant checkout calculations.")
+    created_at           = models.DateTimeField(auto_now_add=True)
+    updated_at           = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name        = "Delivery Address"
+        verbose_name_plural = "Delivery Addresses"
+        ordering            = ['-is_default', '-created_at']
+
+    def save(self, *args, **kwargs):
+        if self.is_default:
+            OrderAddress.objects.filter(user=self.user, is_default=True).update(is_default=False)
+        super(OrderAddress, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user.first_name or self.user.id} - {self.address_tag} ({self.area_or_neighborhood}, {self.city_or_division})"
+    
+    
+    
+class Payment(models.Model):
+    PAYMENT_METHODS = (
+        ('bkash', 'bKash Mobile Wallet'),
+        ('nagad', 'Nagad Mobile Wallet'),
+        ('card', 'Credit/Debit Card'),
+        ('cod', 'Cash on Delivery'),
+    )
+
+    PAYMENT_STATUS = (
+        ('Pending', 'Pending'),
+        ('Completed', 'Completed'),
+        ('Failed', 'Failed'),
+        ('Refunded', 'Refunded'),
+    )
+
+    user  = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='payments')
+    
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS, default='cod')
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='Pending')
+    
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    transaction_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Payment #{self.id} - {self.payment_method} - {self.payment_status} (${self.amount})"
+    
+    

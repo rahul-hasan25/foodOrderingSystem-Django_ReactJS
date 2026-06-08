@@ -82,7 +82,7 @@ const UserLogin = () => {
                                         <div>
                                             <div className="d-flex justify-content-between align-items-center mb-1">
                                                 <label className="form-label small fw-semibold text-secondary m-0">Password</label>
-                                                <Link to="/forgot-password" self className="text-decoration-none tiny-link" style={{ color: '#f97316', fontSize: '12px' }}>Forgot Password?</Link>
+                                                <Link to="/forgot-password" className="text-decoration-none tiny-link" style={{ color: '#f97316', fontSize: '12px' }}>Forgot Password?</Link>
                                             </div>
                                             <div className="input-group rounded-3 overflow-hidden" style={{ border: '1px solid #e2e8f0' }}>
                                                 <span className="input-group-text bg-light border-0 text-muted px-3"><i className="bi bi-lock-fill"></i></span>
