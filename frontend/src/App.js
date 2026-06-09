@@ -20,6 +20,9 @@ import MyOrders from './pages/MyOrders';
 import UserMyProfile from './pages/UserMyProfile';
 import UserSetting from './pages/UserSetting';
 import AllOrders from './pages/AllOrders';
+import DateReports from './pages/DateReports';
+import SearchOrder from './pages/SearchOrder';
+import AdminManageUser from './pages/AdminManageUser';
 
 function App() {
   return (
@@ -34,6 +37,9 @@ function App() {
         <Route path='/add-food' element={<AddFood/>} />
         <Route path='/manage-food' element={<ManageFood/>} />
         <Route path='/all-orders' element={<AllOrders/>} />
+        <Route path='/between-date-reports' element={<DateReports/>} />
+        <Route path='/search/orders' element={<SearchOrder/>} />
+        <Route path='/manage/users' element={<AdminManageUser/>} />
 
         <Route path='/search' element={<SearchPage/>} />
         <Route path='/user/register' element={<UserRegister/>} />

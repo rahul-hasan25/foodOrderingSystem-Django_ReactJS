@@ -125,7 +125,7 @@ const AdminSidebar = () => {
               <span className="nav-label">Dashboard</span>
             </Link>
 
-            <Link className={`nav-item${active === "Registered Users" ? " active" : ""}`} onClick={() => setActive("Registered Users")}>
+            <Link to='/manage/users' className={`nav-item${active === "Registered Users" ? " active" : ""}`} onClick={() => setActive("Registered Users")}>
               <i className="bi bi-people-fill nav-icon" />
               <span className="nav-label">Registered Users</span>
               <span className="badge">24</span>
@@ -218,12 +218,12 @@ const AdminSidebar = () => {
             {/* SECTION: TOOLS */}
             <label className="section-label">Tools</label>
 
-            <Link href="#search" className={`nav-item${active === "Between Date Reports" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Between Date Reports"); }}>
+            <Link to='/between-date-reports' className={`nav-item${active === "Between Date Reports" ? " active" : ""}`} onClick={() => setActive("Between Date Reports")}>
               <i className="bi bi-calendar-check text-secondary nav-icon" />
               <span className="nav-label">Between Date Reports</span>
             </Link>
 
-            <Link href="#search" className={`nav-item${active === "Search" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Search"); }}>
+            <Link to='/search/orders' className={`nav-item${active === "Search" ? " active" : ""}`} onClick={() => setActive("Search")}>
               <i className="bi bi-search nav-icon" />
               <span className="nav-label">Search</span>
             </Link>
