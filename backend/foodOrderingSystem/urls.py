@@ -60,4 +60,6 @@ urlpatterns = [
     path('admin/users/<int:pk>/delete/', AdminUserDeleteAPIView.as_view(), name='admin-user-delete'),
     
     path('admin/dashboard/analytics/', AdminDashboardAnalyticsAPIView.as_view(), name='admin_analytics'), # Admin Dashboard
+    
+    path('menu/', FoodMenuCatalogAPIView.as_view(), name='food-menu-catalog'), # Food Item Menu Page
 ]

@@ -408,3 +408,20 @@ class AdminUserDetailSerializer(serializers.ModelSerializer):
     def get_total_spent(self, obj):
         payments = obj.payments.filter(payment_status='Completed')
         return sum(payment.amount for payment in payments)
+    
+    
+
+# Food Menu Page
+class MenuCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = Category
+        fields = ['id', 'category_name']
+
+class FoodMenuSerializer(serializers.ModelSerializer):
+    category_name  = serializers.CharField(source='category.category_name', read_only=True)
+    average_rating = serializers.FloatField(read_only=True)
+    review_count   = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model  = Food
+        fields = ['id', 'category', 'category_name', 'item_name', 'item_price', 'item_description', 'image', 'item_quantity', 'is_available', 'discount_price', 'shipping_charge', 'preparation_time', 'calories', 'dietary_tags', 'average_rating', 'review_count']

@@ -138,11 +138,11 @@ const PublicLayout = ({children}) => {
                 </Link>
               </li>
 
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link to="/wishlist" className={`nav-link px-2 py-2 rounded-3 fw-semibold d-flex align-items-center gap-1 transition-all ${isActive('/wishlist') ? 'text-warning bg-warning bg-opacity-10' : 'text-secondary'}`} style={{ fontSize: '14.5px', transition: 'all 0.2s' }}>
                   <i className="bi bi-heart fs-5"></i> Wishlist
                 </Link>
-              </li>
+              </li> */}
 
               <li className="nav-item dropdown me-lg-2">
                 <a className="nav-link px-3 py-2 rounded-3 fw-bold text-dark d-flex align-items-center gap-2 user-welcome-badge dropdown-toggle border-0" href="#userMenu" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style={{ fontSize: '14.5px', background: '#f8fafc', border: '1px solid #e2e8f0', cursor: 'pointer' }}>

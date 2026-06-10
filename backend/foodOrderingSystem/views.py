@@ -15,10 +15,12 @@ from .models import (
     Payment
 )
 from .serializers import *
+from rest_framework.generics import ListAPIView
+from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
-from django.db.models import Sum, Count, F, Q, DecimalField
+from django.db.models import Sum, Count, F, Q, DecimalField, Avg
 from django.db.models.functions import TruncMonth, TruncDate, Coalesce
 from datetime import timedelta
 from rest_framework.permissions import AllowAny
@@ -1013,3 +1015,61 @@ class AdminDashboardAnalyticsAPIView(APIView):
             "weekly_sales_chart": weekly_sales_chart,
             "user_registration_chart": user_reg_chart
         }, status=status.HTTP_200_OK)
+        
+        
+        
+
+# Food Item Page
+class MenuCustomPagination(PageNumberPagination):
+    page_size = 8  # Enforces 8 items per page initially
+    page_size_query_param = 'page_size'
+    max_page_size = 50
+
+    def get_paginated_response(self, data):
+        return Response({
+            'pagination': {
+                'count': self.page.paginator.count,
+                'total_pages': self.page.paginator.num_pages,
+                'current_page': self.page.number,
+                'next': self.get_next_link(),
+                'previous': self.get_previous_link(),
+            },
+            'results': data
+        })
+
+class FoodMenuCatalogAPIView(ListAPIView):
+    serializer_class   = FoodMenuSerializer
+    pagination_class   = MenuCustomPagination
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        queryset = Food.objects.annotate(average_rating=Avg('reviews__rating'), review_count=Count('reviews')).order_by('-id')
+
+        search = self.request.query_params.get('search', '').strip()
+        if search:
+            queryset = queryset.filter(item_name__icontains=search)
+
+        category_id = self.request.query_params.get('category', '')
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+
+        min_price = self.request.query_params.get('min_price', '')
+        max_price = self.request.query_params.get('max_price', '')
+        
+        try:
+            if min_price:
+                queryset = queryset.filter(item_price__gte=float(min_price))
+            if max_price:
+                queryset = queryset.filter(item_price__lte=float(max_price))
+        except ValueError:
+            pass
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        response            = super().list(request, *args, **kwargs)
+        categories          = Category.objects.all().order_by('category_name')
+        category_serializer = MenuCategorySerializer(categories, many=True)
+        
+        response.data['categories'] = category_serializer.data
+        return response
