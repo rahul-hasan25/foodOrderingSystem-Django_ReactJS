@@ -60,12 +60,22 @@ class Review(models.Model):
 
 
 class Orders(models.Model):
+    ORDER_STATUS_CHOICES = (
+        ('New', 'New Order'),
+        ('Confirmed', 'Confirm Order'),
+        ('Preparing', 'Food Being Prepared'),
+        ('Pickup', 'Food Pickup'),
+        ('Delivered', 'Food Delivered'),
+        ('Cancelled', 'Cancelled Order'),
+    )
+    
     user              = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_orders')
     food              = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='food_orders')
     quantity          = models.PositiveIntegerField(default=1)
     is_order_placed   = models.BooleanField(default=False)
     order_number      = models.CharField(max_length=50, unique=True, null=True, blank=True, default=None)
     price_at_purchase = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Saves price trends securely")
+    status            = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='New')
     created_at        = models.DateTimeField(auto_now_add=True)
     updated_at        = models.DateTimeField(auto_now=True)
     

@@ -4,8 +4,7 @@ from django.contrib.auth.models import User as AdminUser
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import status, viewsets
-
-# FIX 1: Explicitly import your app's custom User model using an alias to avoid clashes
+from django.utils.dateparse import parse_date
 from .models import (
     User as CustomerUser,
     Category,
@@ -19,7 +18,9 @@ from .serializers import *
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
-from django.db.models import Q, Sum, Count
+from django.db.models import Sum, Count, F, Q, DecimalField
+from django.db.models.functions import TruncMonth, TruncDate, Coalesce
+from datetime import timedelta
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.hashers import check_password
 from rest_framework.decorators import action
@@ -766,3 +767,249 @@ class AdminAllOrdersManagementAPI(APIView):
                 return Response({"error": "No matching transactional profile detected to apply status change."}, status=status.HTTP_400_BAD_REQUEST)
                 
         return Response({"error": "Missing standard parameters context request body fields."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+    
+
+# Admin ---> Between Date Reports
+class BetweenDateReportAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        start_date_str        = request.query_params.get('start_date')
+        end_date_str          = request.query_params.get('end_date')
+        payment_status_filter = request.query_params.get('status')
+
+        queryset = Orders.objects.filter(is_order_placed=True)
+
+        if start_date_str:
+            start_date = parse_date(start_date_str)
+            if start_date:
+                queryset = queryset.filter(created_at__date__gte=start_date)
+                
+        if end_date_str:
+            end_date = parse_date(end_date_str)
+            if end_date:
+                queryset = queryset.filter(created_at__date__lte=end_date)
+
+        if payment_status_filter and payment_status_filter != 'ALL':
+            queryset = queryset.filter(payments__payment_status=payment_status_filter)
+
+        queryset   = queryset.order_by('-created_at')
+        serializer = OrderReportSerializer(queryset, many=True)
+
+        # Compute dynamic KPI breakdown summaries from filtered set
+        total_orders     = queryset.count()
+        total_revenue    = sum(order.total_price for order in queryset)
+        total_items_sold = sum(order.quantity for order in queryset)
+
+        return Response({
+            'success': True,
+            'metrics': {
+                'total_orders'    : total_orders,
+                'total_revenue'   : float(total_revenue),
+                'total_items_sold': total_items_sold
+            },
+            'reports': serializer.data
+        }, status=status.HTTP_200_OK)
+        
+        
+
+# Admin ---> Order Serach Page
+class OrderSearchAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        query = request.query_params.get('search_query', '').strip()
+        if not query:
+            return Response({
+                'success': True,
+                'orders' : []
+            }, status=status.HTTP_200_OK)
+
+        queryset = Orders.objects.filter(
+            Q(is_order_placed=True) & (
+                Q(order_number__icontains=query) |
+                Q(food__item_name__icontains=query) |
+                Q(user__first_name__icontains=query) |
+                Q(user__last_name__icontains=query)
+            )
+        ).distinct().order_by('-created_at')
+
+        serializer = OrderSearchListSerializer(queryset, many=True)
+        return Response({
+            'success': True,
+            'orders' : serializer.data
+        }, status=status.HTTP_200_OK)
+
+
+class OrderDetailByNumberAPIView(APIView):
+    def get(self, request, order_number, *args, **kwargs):
+        try:
+            order      = Orders.objects.get(order_number=order_number, is_order_placed=True)
+            serializer = OrderDetailModalSerializer(order)
+            return Response({
+                'success': True,
+                'detail' : serializer.data
+            }, status=status.HTTP_200_OK)
+        except Orders.DoesNotExist:
+            return Response({
+                'success': False,
+                'message': "Target tracking parameters do not exist in system indexes."
+            }, status=status.HTTP_404_NOT_FOUND)
+            
+
+
+
+# ADMIN ----> Registered User
+class AdminUserDashboardAPIView(APIView):
+    def get(self, request):
+        search_query = request.query_params.get('search', '').strip()
+        users        = CustomerUser.objects.all().order_by('-reg_date')
+
+        if search_query:
+            users = users.filter(
+                Q(first_name__icontains=search_query) |
+                Q(last_name__icontains=search_query) |
+                Q(email__icontains=search_query) |
+                Q(mobile__icontains=search_query)
+            )
+
+        serializer = AdminUserDetailSerializer(users, many=True)
+        
+        total_registered = CustomerUser.objects.count()
+        filtered_count   = users.count()
+        
+        return Response({
+            "metrics": {
+                "total_users"   : total_registered,
+                "filtered_users": filtered_count,
+            },
+            "users": serializer.data
+        }, status=status.HTTP_200_OK)
+
+class AdminUserDeleteAPIView(APIView):
+    def delete(self, request, pk):
+        try:
+            user_to_delete = CustomerUser.objects.get(pk=pk)
+            user_to_delete.delete()
+            return Response({"success": True, "message": "User profile successfully purged."}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "Target system user profile record not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        
+        
+
+
+#ADMIN Dashboard
+class AdminDashboardAnalyticsAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        now   = timezone.now()
+        today = now.date()
+        
+        # 1. Base Time Windows
+        start_of_week  = today - timedelta(days=today.weekday())
+        start_of_month = today.replace(day=1)
+        start_of_year  = today.replace(month=1, day=1)
+
+        # 2. Status Matrices Lookups
+        order_stats = Orders.objects.filter(is_order_placed=True).aggregate(
+            total_orders=Count('id'),
+            new_orders=Count('id', filter=Q(status='New')),
+            confirmed_orders=Count('id', filter=Q(status='Confirmed')),
+            preparing_orders=Count('id', filter=Q(status='Preparing')),
+            pickup_orders=Count('id', filter=Q(status='Pickup')),
+            delivered_orders=Count('id', filter=Q(status='Delivered')),
+            cancelled_orders=Count('id', filter=Q(status='Cancelled'))
+        )
+
+        # 3. Global Entity Count Cards
+        total_users      = User.objects.count()
+        total_categories = Category.objects.count()
+        total_reviews    = Review.objects.count()
+
+        # 4. Deep Ledger Financial Sales Trackers (Using expression rules)
+        sales_data = Orders.objects.filter(is_order_placed=True).exclude(status='Cancelled')
+        
+        # Calculate calculated field totals on runtime records safely
+        def calculate_sales_for_range(queryset):
+            aggregation = queryset.aggregate(
+                total=Sum(F('price_at_purchase') * F('quantity'), output_field=DecimalField())
+            )
+            return float(aggregation['total']) if aggregation['total'] else 0.0
+
+        todays_sales = calculate_sales_for_range(sales_data.filter(created_at__date=today))
+        weeks_sales  = calculate_sales_for_range(sales_data.filter(created_at__date__gte=start_of_week))
+        months_sales = calculate_sales_for_range(sales_data.filter(created_at__date__gte=start_of_month))
+        years_sales  = calculate_sales_for_range(sales_data.filter(created_at__date__gte=start_of_year))
+
+        # 5. Top 5 Best Selling Dishes Grid Layouts
+        top_selling_foods = (
+            Orders.objects.filter(is_order_placed=True).exclude(status='Cancelled')
+            .values('food__id', 'food__item_name', 'food__item_price', 'food__discount_price')
+            .annotate(
+                total_units_sold=Sum('quantity'),
+                total_revenue_earned=Sum(F('price_at_purchase') * F('quantity'), output_field=DecimalField())
+            )
+            .order_by('-total_units_sold')[:5]
+        )
+
+        # 6. Monthly Sales Graph Lookups (Current Calendar Year)
+        monthly_sales_query = (
+            Orders.objects.filter(is_order_placed=True, created_at__date__gte=start_of_year).exclude(status='Cancelled')
+            .annotate(month=TruncMonth('created_at'))
+            .values('month')
+            .annotate(revenue=Sum(F('price_at_purchase') * F('quantity'), output_field=DecimalField()))
+            .order_by('month')
+        )
+        monthly_sales_chart = [
+            {
+                "month": item['month'].strftime('%b'),
+                "sales": float(item['revenue']) if item['revenue'] else 0.0
+            } for item in monthly_sales_query
+        ]
+
+        # 7. Weekly Sales Performance Matrices (Last 7 Days)
+        weekly_sales_chart = []
+        for i in range(6, -1, -1):
+            day_target = today - timedelta(days=i)
+            day_label = day_target.strftime('%a')
+            day_queryset = sales_data.filter(created_at__date=day_target)
+            weekly_sales_chart.append({
+                "day": day_label,
+                "sales": calculate_sales_for_range(day_queryset)
+            })
+
+        # 8. User Registration Velocity Line Matrix (Last 7 Days)
+        user_reg_chart = []
+        for i in range(6, -1, -1):
+            day_target = today - timedelta(days=i)
+            day_label = day_target.strftime('%a')
+            user_count = User.objects.filter(reg_date__date=day_target).count()
+            user_reg_chart.append({
+                "day": day_label,
+                "registrations": user_count
+            })
+
+        # 9. Structure Final Unified Return JSON Payload Object
+        return Response({
+            "metrics": {
+                "total_orders": order_stats['total_orders'] or 0,
+                "new_orders": order_stats['new_orders'] or 0,
+                "confirmed_orders": order_stats['confirmed_orders'] or 0,
+                "preparing_orders": order_stats['preparing_orders'] or 0,
+                "pickup_orders": order_stats['pickup_orders'] or 0,
+                "delivered_orders": order_stats['delivered_orders'] or 0,
+                "cancelled_orders": order_stats['cancelled_orders'] or 0,
+                "total_users": total_users,
+                "total_categories": total_categories,
+                "total_reviews": total_reviews,
+                "todays_sales": todays_sales,
+                "this_week_sales": weeks_sales,
+                "this_month_sales": months_sales,
+                "this_year_sales": years_sales
+            },
+            "top_selling_food": list(top_selling_foods),
+            "monthly_sales_chart": monthly_sales_chart,
+            "weekly_sales_chart": weekly_sales_chart,
+            "user_registration_chart": user_reg_chart
+        }, status=status.HTTP_200_OK)

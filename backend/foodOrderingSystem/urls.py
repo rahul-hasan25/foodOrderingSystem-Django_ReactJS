@@ -50,4 +50,14 @@ urlpatterns = [
     
     path('admin/all-orders/', AdminAllOrdersManagementAPI.as_view(), name='admin_all_orders'),  # Admin Orders ---> All Orders
     path('admin/all-orders/<int:pk>/', AdminAllOrdersManagementAPI.as_view(), name='admin_modify_order'),
+    
+    path('admin/reports/date-range/', BetweenDateReportAPIView.as_view(), name='admin-date-report'), # Admin ---> Between Date Reports
+    
+    path('orders/search/', OrderSearchAPIView.as_view(), name='order-search'), # Admin---> Order Search Page
+    path('orders/detail/<str:order_number>/', OrderDetailByNumberAPIView.as_view(), name='order-detail-by-number'),
+    
+    path('admin/users/', AdminUserDashboardAPIView.as_view(), name='admin-users-dashboard'),  #ADMIN-------> Registered User
+    path('admin/users/<int:pk>/delete/', AdminUserDeleteAPIView.as_view(), name='admin-user-delete'),
+    
+    path('admin/dashboard/analytics/', AdminDashboardAnalyticsAPIView.as_view(), name='admin_analytics'), # Admin Dashboard
 ]

@@ -128,7 +128,6 @@ const AdminSidebar = () => {
             <Link to='/manage/users' className={`nav-item${active === "Registered Users" ? " active" : ""}`} onClick={() => setActive("Registered Users")}>
               <i className="bi bi-people-fill nav-icon" />
               <span className="nav-label">Registered Users</span>
-              <span className="badge">24</span>
             </Link>
 
             <div className="nav-divider" />
