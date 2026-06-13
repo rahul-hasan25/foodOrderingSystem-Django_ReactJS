@@ -1073,3 +1073,29 @@ class FoodMenuCatalogAPIView(ListAPIView):
         
         response.data['categories'] = category_serializer.data
         return response
+    
+    
+
+
+# User Order Tracking
+class TrackOrderAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        order_no = request.query_params.get('order_number', '').strip()
+        
+        if not order_no:
+            return Response(
+                {"error": "An explicit order validation token tracking parameter is required."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        try:
+            order_instance = Orders.objects.get(order_number=order_no, is_order_placed=True)
+            serializer     = OrderTrackingDetailsSerializer(order_instance, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Orders.DoesNotExist:
+            return Response(
+                {"error": "No active placed order record was discovered matching this tracking identifier index."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )

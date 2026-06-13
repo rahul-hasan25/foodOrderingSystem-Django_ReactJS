@@ -425,3 +425,50 @@ class FoodMenuSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Food
         fields = ['id', 'category', 'category_name', 'item_name', 'item_price', 'item_description', 'image', 'item_quantity', 'is_available', 'discount_price', 'shipping_charge', 'preparation_time', 'calories', 'dietary_tags', 'average_rating', 'review_count']
+        
+        
+        
+        
+# User Order Tracking Page
+class TrackedFoodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = Food
+        fields = ['item_name', 'image', 'item_quantity', 'calories', 'preparation_time']
+
+class TrackedAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = OrderAddress
+        fields = ['contact_person_name', 'contact_person_phone', 'street_address', 'area_or_neighborhood', 'city_or_division', 'delivery_landmark']
+
+class TrackedPaymentSerializer(serializers.ModelSerializer):
+    payment_method_display = serializers.CharField(source='get_payment_method_display', read_only=True)
+    payment_status_display = serializers.CharField(source='get_payment_status_display', read_only=True)
+
+    class Meta:
+        model  = Payment
+        fields = ['payment_method_display', 'payment_status_display', 'amount', 'transaction_id']
+
+class OrderTrackingDetailsSerializer(serializers.ModelSerializer):
+    food_details        = TrackedFoodSerializer(source='food', read_only=True)
+    status_display      = serializers.CharField(source='get_status_display', read_only=True)
+    customer_name       = serializers.SerializerMethodField()
+    delivery_address    = serializers.SerializerMethodField()
+    payment_details     = serializers.SerializerMethodField()
+    computed_bill_total = serializers.DecimalField(source='total_price', max_digits=10, decimal_places=2, read_only=True)
+
+    class Meta:
+        model  = Orders
+        fields = ['order_number', 'status', 'status_display', 'quantity', 'price_at_purchase', 'computed_bill_total', 'created_at', 'updated_at', 'food_details', 'customer_name', 'delivery_address', 'payment_details']
+
+    def get_customer_name(self, obj):
+        return f"{obj.user.first_name} {obj.user.last_name}"
+
+    def get_delivery_address(self, obj):
+        address = OrderAddress.objects.filter(user=obj.user, is_default=True).first()
+        if not address:
+            address = OrderAddress.objects.filter(user=obj.user).first()
+        return TrackedAddressSerializer(address).data if address else None
+
+    def get_payment_details(self, obj):
+        payment = Payment.objects.filter(order=obj).last()
+        return TrackedPaymentSerializer(payment).data if payment else None

@@ -24,6 +24,7 @@ import DateReports from './pages/DateReports';
 import SearchOrder from './pages/SearchOrder';
 import AdminManageUser from './pages/AdminManageUser';
 import FoodMenu from './pages/FoodMenu';
+import TrackOrder from './pages/TrackOrder';
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
         <Route path='/user/profile' element={<UserMyProfile/>} />
         <Route path='/user/settings' element={<UserSetting/>} />
         <Route path='/menu' element={<FoodMenu/>} />
+        <Route path='/track' element={<TrackOrder/>} />
       </Routes>
     </BrowserRouter>
   );

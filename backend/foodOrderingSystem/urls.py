@@ -62,4 +62,6 @@ urlpatterns = [
     path('admin/dashboard/analytics/', AdminDashboardAnalyticsAPIView.as_view(), name='admin_analytics'), # Admin Dashboard
     
     path('menu/', FoodMenuCatalogAPIView.as_view(), name='food-menu-catalog'), # Food Item Menu Page
+    
+    path('order/track/', TrackOrderAPIView.as_view(), name='order-tracking-lookup'),  # User Order Track
 ]
