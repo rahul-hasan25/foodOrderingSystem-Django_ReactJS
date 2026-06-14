@@ -472,3 +472,32 @@ class OrderTrackingDetailsSerializer(serializers.ModelSerializer):
     def get_payment_details(self, obj):
         payment = Payment.objects.filter(order=obj).last()
         return TrackedPaymentSerializer(payment).data if payment else None
+    
+    
+
+
+# Manage Reviews
+class ReviewUserSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model  = User
+        fields = ['id', 'full_name', 'email', 'mobile']
+
+    def get_full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
+
+class ReviewFoodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = Food
+        fields = ['id', 'item_name', 'image', 'item_price', 'discount_price']
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user_details   = ReviewUserSerializer(source='user', read_only=True)
+    food_details   = ReviewFoodSerializer(source='food', read_only=True)
+    formatted_date = serializers.DateTimeField(source='created_at', format="%b %d, %Y %I:%M %p", read_only=True)
+
+    class Meta:
+        model  = Review
+        fields = ['id', 'food', 'user', 'rating', 'comment', 'created_at', 'formatted_date', 'user_details', 'food_details']
+        read_only_fields = ['created_at']

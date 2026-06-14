@@ -1099,3 +1099,45 @@ class TrackOrderAPIView(APIView):
                 {"error": "No active placed order record was discovered matching this tracking identifier index."}, 
                 status=status.HTTP_404_NOT_FOUND
             )
+            
+            
+
+# Manage Reviews
+class AdminReviewViewSet(viewsets.ModelViewSet):
+    queryset           = Review.objects.all().order_by('-created_at')
+    serializer_class   = ReviewSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        queryset     = Review.objects.all().order_by('-created_at')
+        rating_param = self.request.query_params.get('rating', None)
+        search_param = self.request.query_params.get('search', None)
+        
+        if rating_param:
+            queryset = queryset.filter(rating=rating_param)
+        if search_param:
+            queryset = queryset.filter(
+                models.Q(comment__icontains=search_param) |
+                models.Q(food__item_name__icontains=search_param) |
+                models.Q(user__first_name__icontains=search_param) |
+                models.Q(user__last_name__icontains=search_param)
+            )
+        return queryset
+
+    @action(detail=False, methods=['get'], url_path='analytics')
+    def get_review_analytics(self, request):
+        total_reviews = Review.objects.count()
+        avg_rating    = Review.objects.aggregate(Avg('rating'))['rating__avg'] or 0.0
+        
+        stars_breakdown = Review.objects.values('rating').annotate(count=Count('id')).order_by()
+        breakdown       = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+        for item in stars_breakdown:
+            rating_val = item['rating']
+            if rating_val in breakdown:
+                breakdown[rating_val] = item['count']
+
+        return Response({
+            'total_reviews' : total_reviews,
+            'average_rating': round(avg_rating, 1),
+            'breakdown'     : breakdown
+        }, status=status.HTTP_200_OK)

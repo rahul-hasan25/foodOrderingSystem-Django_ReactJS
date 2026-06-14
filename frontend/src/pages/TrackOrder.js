@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Container, Row, Col, Card, Form, Button, Spinner, Badge, Table } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
@@ -11,6 +12,37 @@ const TrackOrder = () => {
     const [searchToken, setSearchToken] = useState('');
     const [orderData, setOrderData] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const location = useLocation();
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const orderIdFromUrl = params.get('order_number');
+
+        if (orderIdFromUrl) {
+            setSearchToken(orderIdFromUrl);
+            performSearch(orderIdFromUrl);
+        }
+    }, [location.search]);
+
+    const performSearch = async (token) => {
+        const validatedToken = token.trim().toUpperCase();
+        if (!validatedToken) return;
+
+        setLoading(true);
+        setOrderData(null);
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/order/track/?order_number=${encodeURIComponent(validatedToken)}`);
+            setOrderData(response.data);
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                toast.error("Invalid Order Token reference.");
+            } else {
+                toast.error("Database tracking lookup timeout.");
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleTrackingSearch = async (e) => {
         if (e) e.preventDefault();

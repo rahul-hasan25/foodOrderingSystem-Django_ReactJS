@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PublicLayout from './../components/PublicLayout';
 import '../styles/myorders.css';
 
@@ -8,6 +9,8 @@ const MyOrders = () => {
     const [activeTab, setActiveTab] = useState('All');
     const [expandedOrder, setExpandedOrder] = useState(null);
     const currentUserId = localStorage.getItem('userId');
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!currentUserId) return;
@@ -25,9 +28,7 @@ const MyOrders = () => {
 
     const filterTabs = ['All', 'Processing', 'Confirmed', 'Cancelled'];
 
-    const filteredOrders = activeTab === 'All' 
-        ? orders 
-        : orders.filter(o => o.status === activeTab);
+    const filteredOrders = activeTab === 'All' ? orders : orders.filter(o => o.status === activeTab);
 
     const toggleDetails = (orderNum) => {
         setExpandedOrder(expandedOrder === orderNum ? null : orderNum);
@@ -44,22 +45,16 @@ const MyOrders = () => {
     <PublicLayout>
         <div className="orders-dashboard py-5">
             <div className="container">
-                {/* Header Title Section */}
                 <div className="row mb-5 align-items-center">
                     <div className="col-md-5">
                         <h2 className="fw-extrabold text-dark tracking-tight mb-1">My Food Journeys</h2>
                         <p className="text-muted small m-0">Track, manage, and reorder your culinary experiences.</p>
                     </div>
                     
-                    {/* Dynamic Pills & Floating Counter */}
                     <div className="col-md-7 d-flex justify-content-md-end align-items-center flex-wrap gap-3 mt-3 mt-md-0">
                         <div className="pills-glass-wrapper p-1 rounded-pill bg-white shadow-sm d-flex gap-1">
                             {filterTabs.map(tab => (
-                                <button 
-                                    key={tab}
-                                    onClick={() => setActiveTab(tab)}
-                                    className={`btn rounded-pill px-3 py-2 text-sm transition-all border-0 ${activeTab === tab ? 'bg-dark text-white fw-bold shadow-sm' : 'text-secondary bg-transparent'}`}
-                                >
+                                <button key={tab} onClick={() => setActiveTab(tab)} className={`btn rounded-pill px-3 py-2 text-sm transition-all border-0 ${activeTab === tab ? 'bg-dark text-white fw-bold shadow-sm' : 'text-secondary bg-transparent'}`}>
                                     {tab}
                                 </button>
                             ))}
@@ -67,7 +62,6 @@ const MyOrders = () => {
                     </div>
                 </div>
 
-                {/* Empty State */}
                 {filteredOrders.length === 0 && (
                     <div className="text-center py-5 bg-white rounded-4 shadow-sm border border-dashed-2">
                         <i className="bi bi-box-seam text-muted fs-1 mb-3 d-block"></i>
@@ -76,12 +70,9 @@ const MyOrders = () => {
                     </div>
                 )}
 
-                {/* Orders Main List */}
                 <div className="d-flex flex-column gap-4">
                     {filteredOrders.map((order) => (
                         <div key={order.order_number} className="order-master-card border-0 shadow-sm rounded-4 bg-white overflow-hidden transition-card">
-                            
-                            {/* Card Top Banner Section */}
                             <div className="p-4 bg-glass-header border-bottom d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <div className="d-flex align-items-center gap-3">
                                     <div className="order-icon-square bg-dark text-white rounded-3 d-flex align-items-center justify-content-center">
@@ -110,17 +101,12 @@ const MyOrders = () => {
                                 </div>
                             </div>
 
-                            {/* Center Preview Content Layer */}
                             <div className="p-4">
                                 <div className="row align-items-center">
                                     <div className="col-lg-6 col-md-12 d-flex align-items-center gap-2 overflow-hidden items-preview-row">
                                         {order.items.map((item, idx) => (
                                             <div key={item.id} className="position-relative stack-img-container" style={{ zIndex: 10 - idx }}>
-                                                <img 
-                                                    src={item.food.image.startsWith('http') ? item.food.image : `http://127.0.0.1:8000${item.food.image}`} 
-                                                    alt={item.food.item_name} 
-                                                    className="avatar-img-circle rounded-circle border border-2 border-white shadow-sm object-fit-cover"
-                                                />
+                                                <img src={item.food.image.startsWith('http') ? item.food.image : `http://127.0.0.1:8000${item.food.image}`} alt={item.food.item_name} className="avatar-img-circle rounded-circle border border-2 border-white shadow-sm object-fit-cover"/>
                                                 <span className="badge bg-dark rounded-circle position-absolute bottom-0 end-0 mini-qty-bubble">
                                                     {item.quantity}
                                                 </span>
@@ -134,21 +120,16 @@ const MyOrders = () => {
                                         </div>
                                     </div>
 
-                                    {/* Action Shortcuts Layout */}
                                     <div className="col-lg-6 col-md-12 d-flex justify-content-lg-end justify-content-start gap-3 mt-3 mt-lg-0">
-                                        <a href={`/track/${order.order_number}`} className="btn btn-outline-dark rounded-3 px-4 py-2 font-sm fw-bold d-flex align-items-center gap-2 shadow-sm-hover">
+                                        <button onClick={() => navigate(`/track?order_number=${order.order_number}`)} className="btn btn-outline-dark rounded-3 px-4 py-2 font-sm fw-bold d-flex align-items-center gap-2 shadow-sm-hover">
                                             <i className="bi bi-geo-alt-fill text-danger animate-pulse"></i> Track Link
-                                        </a>
-                                        <button 
-                                            onClick={() => toggleDetails(order.order_number)}
-                                            className={`btn rounded-3 px-4 py-2 font-sm fw-bold d-flex align-items-center gap-2 transition-all ${expandedOrder === order.order_number ? 'btn-dark' : 'btn-light-accent text-dark'}`}
-                                        >
+                                        </button>
+                                        <button onClick={() => toggleDetails(order.order_number)} className={`btn rounded-3 px-4 py-2 font-sm fw-bold d-flex align-items-center gap-2 transition-all ${expandedOrder === order.order_number ? 'btn-dark' : 'btn-light-accent text-dark'}`} >
                                             <i className={`bi ${expandedOrder === order.order_number ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`}></i> View Detail
                                         </button>
                                     </div>
                                 </div>
 
-                                {/* Dynamic Hidden Expandable Drawer Segment */}
                                 {expandedOrder === order.order_number && (
                                     <div className="expanded-details-tray mt-4 pt-4 border-top animation-slide-down">
                                         <h6 className="fw-extrabold text-dark mb-3">Itemized Invoice Breakdown</h6>
@@ -170,7 +151,6 @@ const MyOrders = () => {
                                             ))}
                                         </div>
 
-                                        {/* Cost Matrix Calculation Board */}
                                         <div className="row justify-content-end">
                                             <div className="col-md-5 col-lg-4">
                                                 <div className="p-3 bg-matrix-summary rounded-4 border">

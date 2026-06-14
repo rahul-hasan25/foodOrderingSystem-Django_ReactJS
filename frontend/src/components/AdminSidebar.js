@@ -227,7 +227,7 @@ const AdminSidebar = () => {
               <span className="nav-label">Search</span>
             </Link>
 
-            <Link href="#reviews" className={`nav-item${active === "Manage Reviews" ? " active" : ""}`} onClick={(e) => { e.preventDefault(); setActive("Manage Reviews"); }}>
+            <Link to='/manage-reviews' className={`nav-item${active === "Manage Reviews" ? " active" : ""}`} onClick={() => setActive("Manage Reviews")}>
               <i className="bi bi-chat-square-text-fill nav-icon" />
               <span className="nav-label">Manage Reviews</span>
               <span className="badge">7</span>

@@ -25,6 +25,7 @@ import SearchOrder from './pages/SearchOrder';
 import AdminManageUser from './pages/AdminManageUser';
 import FoodMenu from './pages/FoodMenu';
 import TrackOrder from './pages/TrackOrder';
+import ManageReviews from './pages/ManageReviews';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route path='/between-date-reports' element={<DateReports/>} />
         <Route path='/search/orders' element={<SearchOrder/>} />
         <Route path='/manage/users' element={<AdminManageUser/>} />
+        <Route path='/manage-reviews' element={<ManageReviews/>} />
 
         <Route path='/search' element={<SearchPage/>} />
         <Route path='/user/register' element={<UserRegister/>} />

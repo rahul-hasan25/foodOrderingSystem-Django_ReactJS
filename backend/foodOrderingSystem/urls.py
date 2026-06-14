@@ -5,6 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'foods', FoodViewSet, basename='food')
+router.register(r'admin/reviews', AdminReviewViewSet, basename='admin-reviews')
 
 urlpatterns = [
     path('admin/login/', admin_login_view, name='foodflex_admin_login_api'),
@@ -64,4 +65,6 @@ urlpatterns = [
     path('menu/', FoodMenuCatalogAPIView.as_view(), name='food-menu-catalog'), # Food Item Menu Page
     
     path('order/track/', TrackOrderAPIView.as_view(), name='order-tracking-lookup'),  # User Order Track
+    
+    path('', include(router.urls)),  # Review Manage
 ]
